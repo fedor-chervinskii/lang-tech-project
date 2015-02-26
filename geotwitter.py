@@ -13,26 +13,20 @@ alchemyapi = AlchemyAPI()
 def getTargetedSentiment(myText, myKeyword, APIobject):
     response = APIobject.sentiment_targeted('text', myText, myKeyword)
     if response['status'] == 'OK':
-        print('## Targeted Sentiment ##')
-        print('type: ', response['docSentiment']['type'])
         if 'score' in response['docSentiment']:
-            print('score: ', response['docSentiment']['score'])
+            return response['docSentiment']['type'],response['docSentiment']['score']
     else:
         print('Error in targeted sentiment analysis call: ', response['statusInfo'])
 
 def getSentiment(myText, APIobject):
     response = APIobject.sentiment('text', myText)
     if response['status'] == 'OK':
-        print('## Document Sentiment ##')
-        print('type: ', response['docSentiment']['type'])
         if 'score' in response['docSentiment']:
-            print('score: ', response['docSentiment']['score'])
+            return response['docSentiment']['type'],response['docSentiment']['score']
     else:
         print('Error in sentiment analysis call: ', response['statusInfo'])
 
-getSentiment('Путин - самый лучший президент',alchemyapi)
 
-#[me, Segey1, Sergey2, Nastya]
 CONSUMER_KEY = ['KpfGPpsl5Dn03Lb5wzvQfEaMc',
                 '13AqFSrFdFv7rdLVOGvzJCkmp',
                 '45RuEYLg5eVTYyEGuyEerplyY',
@@ -130,11 +124,12 @@ class CustomStreamListener(tweepy.StreamListener):
         y.append(ypos)
         drawnow(makeFig)
         print status.user.screen_name + ":"
-        print status.text
+        print status.text + '   ' + str(getSentiment(status.text,alchemyapi))
         try:
             print coord
         except:
             print 'coordinates are not defined'
+        print ''
 
     def on_error(self, status_code):
         print >> sys.stderr, 'Encountered error with status code:', status_code

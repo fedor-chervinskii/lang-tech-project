@@ -9,9 +9,28 @@ from drawnow import drawnow
 
 alchemyapi = AlchemyAPI()
 
-myText = "нас отпустили домой с физ-ры"
-response = alchemyapi.sentiment("text", myText)
-print "Sentiment: ", response["docSentiment"]["type"]
+
+def getTargetedSentiment(myText, myKeyword, APIobject):
+    response = APIobject.sentiment_targeted('text', myText, myKeyword)
+    if response['status'] == 'OK':
+        print('## Targeted Sentiment ##')
+        print('type: ', response['docSentiment']['type'])
+        if 'score' in response['docSentiment']:
+            print('score: ', response['docSentiment']['score'])
+    else:
+        print('Error in targeted sentiment analysis call: ', response['statusInfo'])
+
+def getSentiment(myText, APIobject):
+    response = APIobject.sentiment('text', myText)
+    if response['status'] == 'OK':
+        print('## Document Sentiment ##')
+        print('type: ', response['docSentiment']['type'])
+        if 'score' in response['docSentiment']:
+            print('score: ', response['docSentiment']['score'])
+    else:
+        print('Error in sentiment analysis call: ', response['statusInfo'])
+
+getSentiment('Путин - самый лучший президент',alchemyapi)
 
 #[me, Segey1, Sergey2, Nastya]
 CONSUMER_KEY = ['KpfGPpsl5Dn03Lb5wzvQfEaMc',
@@ -56,6 +75,7 @@ left = 37.32
 
 im = plt.imread('Moscow_bigger.png')
 width, height, nchannels = im.shape
+
 
 def getX(lgt):
     return round(width*( lgt - left )/float( right - left ))

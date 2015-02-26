@@ -1,9 +1,17 @@
+# -*- coding: utf-8 -*-
 import tweepy
 import json
 import time
 import sqlite3
+from alchemyapi import AlchemyAPI
 import matplotlib.pyplot as plt
 from drawnow import drawnow
+
+alchemyapi = AlchemyAPI()
+
+myText = "нас отпустили домой с физ-ры"
+response = alchemyapi.sentiment("text", myText)
+print "Sentiment: ", response["docSentiment"]["type"]
 
 #[me, Segey1, Sergey2, Nastya]
 CONSUMER_KEY = ['KpfGPpsl5Dn03Lb5wzvQfEaMc',
@@ -116,5 +124,5 @@ class CustomStreamListener(tweepy.StreamListener):
         print >> sys.stderr, 'Timeout...'
         return True # Don't kill the stream
 
-sapi = tweepy.streaming.Stream(auths[0], CustomStreamListener())
+sapi = tweepy.streaming.Stream(auths[1], CustomStreamListener())
 sapi.filter(locations=[left, down, right, up])

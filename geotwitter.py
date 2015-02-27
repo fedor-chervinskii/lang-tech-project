@@ -4,8 +4,8 @@ import json
 import time
 import sqlite3
 from alchemyapi import AlchemyAPI
-import matplotlib.pyplot as plt
-from drawnow import drawnow
+# import matplotlib.pyplot as plt
+# from drawnow import drawnow
 
 alchemyapi = AlchemyAPI()
 
@@ -67,31 +67,31 @@ down = 55.49
 right = 37.97
 left = 37.32
 
-im = plt.imread('Moscow_bigger.png')
-width, height, nchannels = im.shape
-
-
-def getX(lgt):
-    return round(width*( lgt - left )/float( right - left ))
-
-def getY(lat):
-    return round(height*( up - lat )/float( up - down ))
-
-plt.ion() # enable interactivity
-fig = plt.figure()
-
-def makeFig():
-    plt.imshow(im)
-    plt.axis([0,800,1029,0])
-    plt.scatter(x,y)
-
-x=list()
-y=list()
-
-x.append(getX((right+left)/2))
-y.append(getY((down+up)/2))
-
-drawnow(makeFig)
+# im = plt.imread('Moscow_bigger.png')
+# width, height, nchannels = im.shape
+#
+#
+# def getX(lgt):
+#     return round(width*( lgt - left )/float( right - left ))
+#
+# def getY(lat):
+#     return round(height*( up - lat )/float( up - down ))
+#
+# plt.ion() # enable interactivity
+# fig = plt.figure()
+#
+# def makeFig():
+#     plt.imshow(im)
+#     plt.axis([0,800,1029,0])
+#     plt.scatter(x,y)
+#
+# x=list()
+# y=list()
+#
+# x.append(getX((right+left)/2))
+# y.append(getY((down+up)/2))
+#
+# drawnow(makeFig)
 
 class CustomStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -114,15 +114,15 @@ class CustomStreamListener(tweepy.StreamListener):
             # Most errors we're going to see relate to the handling of UTF-8 messages (sorry)
             print(e)
 
-        if status.coordinates :
-            xpos = getX(status.coordinates['coordinates'][0])
-            ypos = getY(status.coordinates['coordinates'][1])
-        else :
-            xpos = getX(37.62)
-            ypos = getY(55.75)
-        x.append(xpos)
-        y.append(ypos)
-        drawnow(makeFig)
+        # if status.coordinates :
+        #     xpos = getX(status.coordinates['coordinates'][0])
+        #     ypos = getY(status.coordinates['coordinates'][1])
+        # else :
+        #     xpos = getX(37.62)
+        #     ypos = getY(55.75)
+        # x.append(xpos)
+        # y.append(ypos)
+        # drawnow(makeFig)
         print status.user.screen_name + ":"
         print status.text + '   ' + str(getSentiment(status.text,alchemyapi))
         try:

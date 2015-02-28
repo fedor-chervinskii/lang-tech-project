@@ -3,8 +3,8 @@ import tweepy
 import json
 import time
 import sqlite3
-import matplotlib.pyplot as plt
-from drawnow import drawnow
+#import matplotlib.pyplot as plt
+#   from drawnow import drawnow
 from datetime import datetime
 #from alchemyapi import AlchemyAPI
 

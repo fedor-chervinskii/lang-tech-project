@@ -4,8 +4,9 @@ import time
 import sqlite3
 import matplotlib.pyplot as plt
 from drawnow import drawnow
+from datetime import datetime
 
-#[me, Segey1, Sergey2, Nastya]
+#Some access keys
 CONSUMER_KEY = ['KpfGPpsl5Dn03Lb5wzvQfEaMc',
                 '13AqFSrFdFv7rdLVOGvzJCkmp',
                 '45RuEYLg5eVTYyEGuyEerplyY',
@@ -37,8 +38,24 @@ for i in range(5):
     auth.set_access_token(OAUTH_TOKEN[i], OAUTH_TOKEN_SECRET[i])
     auths.append(auth)
 
+json_filename = 'tweets.json'
+
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            encoded_object = list(obj.timetuple())[0:6]
+        else:
+            encoded_object =json.JSONEncoder.default(self, obj)
+        return encoded_object
+
 conn = sqlite3.connect('tweets.db')
 curs = conn.cursor()
+
+with open(json_filename, 'w') as json_file:
+    json_file.write(json.dumps([], cls=DateTimeEncoder))
+
+#uncomment the following in case of the first launch
+
 #curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
 
 up = 55.96
@@ -47,7 +64,7 @@ right = 37.97
 left = 37.32
 
 im = plt.imread('Moscow_bigger.png')
-width, height, nchannels = im.shape
+height, width, nchannels = im.shape
 
 def getX(lgt):
     return round(width*( lgt - left )/float( right - left ))
@@ -58,16 +75,13 @@ def getY(lat):
 plt.ion() # enable interactivity
 fig = plt.figure()
 
+x=list()
+y=list()
+
 def makeFig():
     plt.imshow(im)
     plt.axis([0,800,1029,0])
     plt.scatter(x,y)
-
-x=list()
-y=list()
-
-x.append(getX((right+left)/2))
-y.append(getY((down+up)/2))
 
 drawnow(makeFig)
 
@@ -80,11 +94,21 @@ class CustomStreamListener(tweepy.StreamListener):
             if status.coordinates:
                 coord = str(status.coordinates['coordinates'])
             else:
-                coord = '[37.619899, 55.753301]' #center of Moscow
+                coord = [37.619899, 55.753301] #center of Moscow
             src = status.source.strip()
             cat = status.created_at
+            score = 0
 
-            # Now that we have our tweet information, let's stow it away in our
+            #writing to json
+
+            #format: [{"location":[long, lat],"text":"tweet text","score":0.7},{"location":[long, lat],"text":"tweet text 2","score":0.3}]
+
+            with open(json_filename,'r') as json_file:
+                json_data = json.load(json_file)
+            json_data.append({'location': coord, 'text': txt, 'created_at': cat, 'score': score})
+            with open(json_filename,'w') as json_file:
+                json_file.write(json.dumps(json_data, cls=DateTimeEncoder))
+
             # sqlite database
             curs.execute("insert into tweets (tid, username, created_at, content, coordinates, source) values(?, ?, ?, ?, ?, ?)", (tid, usr, cat, txt, coord, src))
             conn.commit()
@@ -116,5 +140,5 @@ class CustomStreamListener(tweepy.StreamListener):
         print >> sys.stderr, 'Timeout...'
         return True # Don't kill the stream
 
-sapi = tweepy.streaming.Stream(auths[0], CustomStreamListener())
+sapi = tweepy.streaming.Stream(auths[2], CustomStreamListener())
 sapi.filter(locations=[left, down, right, up])

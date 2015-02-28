@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import tweepy
 import json
 import time
@@ -5,6 +6,26 @@ import sqlite3
 import matplotlib.pyplot as plt
 from drawnow import drawnow
 from datetime import datetime
+#from alchemyapi import AlchemyAPI
+
+#alchemyapi = AlchemyAPI()
+
+#def getTargetedSentiment(myText, myKeyword, APIobject):
+#    response = APIobject.sentiment_targeted('text', myText, myKeyword)
+#    if response['status'] == 'OK':
+#        if 'score' in response['docSentiment']:
+#            return response['docSentiment']['type'],response['docSentiment']['score']
+#    else:
+#        print('Error in targeted sentiment analysis call: ', response['statusInfo'])
+#
+#def getSentiment(myText, APIobject):
+#    response = APIobject.sentiment('text', myText)
+#    if response['status'] == 'OK':
+#        if 'score' in response['docSentiment']:
+#            return response['docSentiment']['type'],response['docSentiment']['score']
+#    else:
+#        print('Error in sentiment analysis call: ', response['statusInfo'])
+
 
 #Some access keys
 CONSUMER_KEY = ['KpfGPpsl5Dn03Lb5wzvQfEaMc',
@@ -56,34 +77,12 @@ with open(json_filename, 'w') as json_file:
 
 #uncomment the following in case of the first launch
 
-#curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
+curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
 
 up = 55.96
 down = 55.49
 right = 37.97
 left = 37.32
-
-im = plt.imread('Moscow_bigger.png')
-height, width, nchannels = im.shape
-
-def getX(lgt):
-    return round(width*( lgt - left )/float( right - left ))
-
-def getY(lat):
-    return round(height*( up - lat )/float( up - down ))
-
-plt.ion() # enable interactivity
-fig = plt.figure()
-
-x=list()
-y=list()
-
-def makeFig():
-    plt.imshow(im)
-    plt.axis([0,800,1029,0])
-    plt.scatter(x,y)
-
-drawnow(makeFig)
 
 class CustomStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -92,7 +91,7 @@ class CustomStreamListener(tweepy.StreamListener):
             usr = status.author.screen_name.strip()
             txt = status.text.strip()
             if status.coordinates:
-                coord = str(status.coordinates['coordinates'])
+                coord = status.coordinates['coordinates']
             else:
                 coord = [37.619899, 55.753301] #center of Moscow
             src = status.source.strip()
@@ -110,27 +109,19 @@ class CustomStreamListener(tweepy.StreamListener):
                 json_file.write(json.dumps(json_data, cls=DateTimeEncoder))
 
             # sqlite database
-            curs.execute("insert into tweets (tid, username, created_at, content, coordinates, source) values(?, ?, ?, ?, ?, ?)", (tid, usr, cat, txt, coord, src))
+            curs.execute("insert into tweets (tid, username, created_at, content, coordinates, source) values(?, ?, ?, ?, ?, ?)", (tid, usr, cat, txt, str(coord), src))
             conn.commit()
         except Exception as e:
             # Most errors we're going to see relate to the handling of UTF-8 messages (sorry)
             print(e)
 
-        if status.coordinates :
-            xpos = getX(status.coordinates['coordinates'][0])
-            ypos = getY(status.coordinates['coordinates'][1])
-        else :
-            xpos = getX(37.62)
-            ypos = getY(55.75)
-        x.append(xpos)
-        y.append(ypos)
-        drawnow(makeFig)
-        print status.user.screen_name + ":"
-        print status.text
+        print usr + ":"
+        print txt #+ '   ' + str(getSentiment(status.text,alchemyapi))
         try:
             print coord
         except:
             print 'coordinates are not defined'
+        print ''
 
     def on_error(self, status_code):
         print >> sys.stderr, 'Encountered error with status code:', status_code

@@ -48,11 +48,11 @@
       .attr("height", height);
 
 
-      d3.json("rus.json", function(error, us) {
+      d3.json("rus.json", function(error, moscow) {
               if (error) return console.error(error);
 
               svg.append("path")
-              .datum(topojson.mesh(us))
+              .datum(topojson.mesh(moscow))
               .attr("d", path);
 
               svg.append("g")
@@ -65,17 +65,21 @@
                 return "translate(" + d + ")"; })
               .attr("r", 5);
 
+              //Group of tweets locations
+              svg.append("g").attr("class", "bubble");
 
               setInterval(function () {
-                d3.json("locations.json", function(error, locations) {
+                d3.json("tweets.json", function(error, tweets) {
                   var projectedLocations = [];
-                  for (var i=0; i<locations.length; i++) {
-                    projectedLocations[i] = projection(locations[i]);
+                  for (var i=0; i<tweets.length; i++) {
+                    var lat = Math.floor(tweets[i]["location"][0]*1000+0.5)/1000;
+                    var long = Math.floor(tweets[i]["location"][1]*1000+0.5)/1000;
+                    projectedLocations[i] = projection([lat,long]);
                   }
-
+                  console.log(tweets.length);
                   svg.append("g")
-                  .attr("class", "bubble")
-                  .selectAll("circle")
+                  svg.selectAll("g.bubble").
+                  selectAll("circle")
                   .data(projectedLocations)
                   .enter().append("circle")
                   .attr("transform", function(d) {

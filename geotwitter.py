@@ -3,31 +3,31 @@ import tweepy
 import json
 import time
 import sqlite3
-#import matplotlib.pyplot as plt
-#   from drawnow import drawnow
+import Tkinter as tk
 from datetime import datetime
-#from alchemyapi import AlchemyAPI
+import sys
+#import matplotlib.pyplot as plt
+#from drawnow import drawnow
+from alchemyapi import AlchemyAPI
 
-#alchemyapi = AlchemyAPI()
+alchemyapi = AlchemyAPI()
 
-#def getTargetedSentiment(myText, myKeyword, APIobject):
-#    response = APIobject.sentiment_targeted('text', myText, myKeyword)
-#    if response['status'] == 'OK':
-#        if 'score' in response['docSentiment']:
-#            return response['docSentiment']['type'],response['docSentiment']['score']
-#    else:
-#        print('Error in targeted sentiment analysis call: ', response['statusInfo'])
-#
-#def getSentiment(myText, APIobject):
-#    response = APIobject.sentiment('text', myText)
-#    if response['status'] == 'OK':
-#        if 'score' in response['docSentiment']:
-#            return response['docSentiment']['type'],response['docSentiment']['score']
-#    else:
-#        print('Error in sentiment analysis call: ', response['statusInfo'])
+def getTargetedSentiment(myText, myKeyword, APIobject):
+    response = APIobject.sentiment_targeted('text', myText, myKeyword)
+    if response['status'] == 'OK':
+        if 'score' in response['docSentiment']:
+            return response['docSentiment']['type'],response['docSentiment']['score']
+    else:
+        print('Error in targeted sentiment analysis call: ', response['statusInfo'])
 
+def getSentiment(myText, APIobject):
+    response = APIobject.sentiment('text', myText)
+    if response['status'] == 'OK':
+        if 'score' in response['docSentiment']:
+            return response['docSentiment']['type'],response['docSentiment']['score']
+    else:
+        print('Error in sentiment analysis call: ', response['statusInfo'])
 
-#Some access keys
 CONSUMER_KEY = ['KpfGPpsl5Dn03Lb5wzvQfEaMc',
                 '13AqFSrFdFv7rdLVOGvzJCkmp',
                 '45RuEYLg5eVTYyEGuyEerplyY',
@@ -52,15 +52,6 @@ OAUTH_TOKEN_SECRET = ['cyLlZtQyv4rgcWA5pGaXLtGJaFqD4PGOlxSdb4ECVzoSP',
                       '9b36g1wXLzn1yB0FGIoT9eACxPPpaZVfESnmRYcDYk3wv',
                       'MqgrZHb8CMyNqFJn36YmCtLUQ5rqNUzX2IxWNfQdHQ6t7']
 
-auths = []
-
-for i in range(5):
-    auth = tweepy.OAuthHandler(CONSUMER_KEY[i], CONSUMER_SECRET[i])
-    auth.set_access_token(OAUTH_TOKEN[i], OAUTH_TOKEN_SECRET[i])
-    auths.append(auth)
-
-json_filename = 'tweets.json'
-
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
@@ -68,21 +59,6 @@ class DateTimeEncoder(json.JSONEncoder):
         else:
             encoded_object =json.JSONEncoder.default(self, obj)
         return encoded_object
-
-conn = sqlite3.connect('tweets.db')
-curs = conn.cursor()
-
-with open(json_filename, 'w') as json_file:
-    json_file.write(json.dumps([], cls=DateTimeEncoder))
-
-#uncomment the following in case of the first launch
-
-curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
-
-up = 55.96
-down = 55.49
-right = 37.97
-left = 37.32
 
 class CustomStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -99,7 +75,6 @@ class CustomStreamListener(tweepy.StreamListener):
             score = 0
 
             #writing to json
-
             #format: [{"location":[long, lat],"text":"tweet text","score":0.7},{"location":[long, lat],"text":"tweet text 2","score":0.3}]
 
             with open(json_filename,'r') as json_file:
@@ -116,7 +91,7 @@ class CustomStreamListener(tweepy.StreamListener):
             print(e)
 
         print usr + ":"
-        print txt #+ '   ' + str(getSentiment(status.text,alchemyapi))
+        print txt + '   '  #+ str(getSentiment(status.text,alchemyapi))
         try:
             print coord
         except:
@@ -131,5 +106,34 @@ class CustomStreamListener(tweepy.StreamListener):
         print >> sys.stderr, 'Timeout...'
         return True # Don't kill the stream
 
-sapi = tweepy.streaming.Stream(auths[2], CustomStreamListener())
-sapi.filter(locations=[left, down, right, up])
+
+def main():
+
+    for i in range(5):
+        auth = tweepy.OAuthHandler(CONSUMER_KEY[i], CONSUMER_SECRET[i])
+        auth.set_access_token(OAUTH_TOKEN[i], OAUTH_TOKEN_SECRET[i])
+        auths.append(auth)
+
+    with open(json_filename, 'w') as json_file:
+        json_file.write(json.dumps([], cls=DateTimeEncoder))
+
+    #curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
+
+    up = 55.96
+    down = 55.49
+    right = 37.97
+    left = 37.32
+
+    sapi = tweepy.streaming.Stream(auths[4], CustomStreamListener())
+    sapi.filter(locations=[left, down, right, up])
+
+
+if __name__ == "__main__":
+
+    auths = []
+    json_filename = 'tweets.json'
+    conn = sqlite3.connect('tweets.db')
+    curs = conn.cursor()
+    main()
+
+

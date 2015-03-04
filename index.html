@@ -7,12 +7,14 @@
       stroke: #000;
       stroke-linejoin: round;
       stroke-linecap: round;
+      stroke-width: .5px;
     }
 
     .bubble {
       fill-opacity: .5;
-      stroke: #fff;
-      stroke-width: .5px;
+      stroke: #000000;
+      fill:#000000;
+      stroke-width: .1px;
     }
 
     .redBubble {
@@ -32,12 +34,11 @@
           height = 600;
 
 
-      var projection = d3.geo.albers()
-      //.rotate([-8.7,3.2,-5.3])
-      .rotate([0,0])
-      .center([37.7, 55.7])
-      .parallels([36.0, 39.0])
-      .scale(70000)
+      var projection = d3.geo.mercator()
+      .rotate([-10.7,4.2,-6.3])
+      //.rotate([0,0,0])
+      .center([38.4, 55.8])
+      .scale(20000)
       .translate([width / 2, height / 2]);
 
       var path = d3.geo.path()
@@ -47,29 +48,51 @@
       .attr("width", width)
       .attr("height", height);
 
-
       d3.json("rus.json", function(error, moscow) {
               if (error) return console.error(error);
 
-              svg.append("path")
+              var pathGroup = svg.append("g");
+
+              pathGroup.append("path")
               .datum(topojson.mesh(moscow))
               .attr("d", path);
 
-              svg.append("g")
-              .attr("class", "redBubble")
+              var g = svg.append("g");
+
+              g.attr("class", "redBubble")
               .selectAll("circle")
-              .data([projection([37.6178, 55.7517]),projection([37.8, 55.2])])
+              .data([projection([37.6178, 55.7517])])
               .enter().append("circle")
               .attr("transform", function(d) {
-                console.log(d);
                 return "translate(" + d + ")"; })
               .attr("r", 5);
 
               //Group of tweets locations
-              svg.append("g").attr("class", "bubble");
+              var bubbleGroup = svg.append("g").attr("class", "bubble");
+
+              var zoom = d3.behavior.zoom()
+                  .on("zoom",function() {
+                    pathGroup.attr("transform","translate("+
+                          d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+
+                    g.attr("transform","translate("+
+                          d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+                    g.selectAll("circle").attr("r", function() {
+                      return 5/d3.event.scale; })
+                    bubbleGroup.attr("transform","translate("+
+                          d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+                    bubbleGroup.selectAll("circle").attr("r", function() {
+                            return 5/d3.event.scale; })
+                    pathGroup.selectAll("path")
+                        .attr("d", path.projection(projection));
+
+                      });
+
+              svg.call(zoom)
+
 
               setInterval(function () {
-                d3.json("tweets.json", function(error, tweets) {
+                d3.json("tweetsNikita.json", function(error, tweets) {
                   var projectedLocations = [];
                   for (var i=0; i<tweets.length; i++) {
                     var lat = Math.floor(tweets[i]["location"][0]*1000+0.5)/1000;
@@ -77,15 +100,15 @@
                     projectedLocations[i] = projection([lat,long]);
                   }
                   console.log(tweets.length);
-                  svg.append("g")
-                  svg.selectAll("g.bubble").
+
+                  bubbleGroup.
                   selectAll("circle")
                   .data(projectedLocations)
                   .enter().append("circle")
                   .attr("transform", function(d) {
                     console.log(d);
                     return "translate(" + d + ")"; })
-                  .attr("r", 5);
+                  .attr("r", 5/zoom.scale());
 
                 });
 

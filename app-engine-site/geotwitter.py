@@ -10,6 +10,10 @@ import sys
 from alchemyapi import AlchemyAPI
 from TweetModel import Tweet
 
+from google.appengine.api import urlfetch
+
+urlfetch.set_default_fetch_deadline(60)
+
 alchemyapi = AlchemyAPI()
 
 def getTargetedSentiment(myText, myKeyword, APIobject):
@@ -84,11 +88,11 @@ class CustomStreamListener(tweepy.StreamListener):
             #     json_file.write(json.dumps(json_data, cls=DateTimeEncoder))
 
             tweet = Tweet()
-            tweet.content = content
-            tweet.username = username
-            tweet.coordinates = coordinates
-            tweet.source = source
-            tweet.tid = tid
+            tweet.content = txt.encode("utf-8")
+            tweet.username = usr
+            tweet.coordinates = json.dumps(coord)
+            tweet.source = src
+            tweet.tid = int(tid)
             tweet.put()
 
             # sqlite database
@@ -99,7 +103,7 @@ class CustomStreamListener(tweepy.StreamListener):
             print(e)
 
         print usr + ":"
-        print txt + '   '  #+ str(getSentiment(status.text,alchemyapi))
+        print txt.encode("utf-8") + '   '  #+ str(getSentiment(status.text,alchemyapi))
         try:
             print coord
         except:

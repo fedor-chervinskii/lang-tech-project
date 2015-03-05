@@ -1,0 +1,29 @@
+application: russiantwitteranalysis
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /(.*\.(gif|png|jpg|ico|js|css))
+  static_files: \1
+  upload: (.*\.(gif|png|jpg|ico|js|css))
+
+- url: /robots.txt
+  static_files: robots.txt
+  upload: robots.txt
+
+- url: /static
+  static_dir: static
+
+- url: /parsing
+  script: parseManager.application
+
+- url: .*
+  script: main.application
+
+libraries:
+- name: numpy
+  version: "latest"
+- name: jinja2
+  version: latest

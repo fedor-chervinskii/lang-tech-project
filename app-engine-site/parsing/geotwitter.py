@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-import tweepy
+import lib.tweepy as tweepy
 import json
 import time
 import sqlite3
+import Tkinter as tk
 from datetime import datetime
 import sys
 #import matplotlib.pyplot as plt
 #from drawnow import drawnow
-from lib.alchemyapi import AlchemyAPI
+from alchemyapi import AlchemyAPI
 
 alchemyapi = AlchemyAPI()
 

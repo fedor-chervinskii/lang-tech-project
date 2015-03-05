@@ -2,7 +2,7 @@ application: russiantwitteranalysis
 version: 1
 runtime: python27
 api_version: 1
-threadsafe: yes
+threadsafe: false
 
 handlers:
 - url: /(.*\.(gif|png|jpg|ico|js|css))
@@ -17,7 +17,7 @@ handlers:
   static_dir: static
 
 - url: /parsing
-  script: parseManager.application
+  script: parsemanager.application
 
 - url: .*
   script: main.application
@@ -26,4 +26,6 @@ libraries:
 - name: numpy
   version: "latest"
 - name: jinja2
+  version: latest
+- name: ssl
   version: latest

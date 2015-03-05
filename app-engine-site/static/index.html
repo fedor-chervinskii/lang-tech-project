@@ -92,26 +92,28 @@
 
 
               setInterval(function () {
-                d3.json("http://russiantwitteranalysis.appspot.com", function(error, tweets) {
+                d3.json("tweetsNikita.json", function(error, tweets) {
+                  console.log("Start");
                   var projectedLocations = [];
                   for (var i=0; i<tweets.length; i++) {
                     //TODO: Convert string to array in Python
                     var location = JSON.parse(tweets[i]["location"]);
-                    console.log(location);
 
                     var lat = location[0];//Math.floor(location[0] * 1000 + 0.5)/1000;
                     var long = location[1];// Math.floor(location[1] * 1000 + 0.5)/1000;
                     projectedLocations[i] = projection([lat,long]);
-                    console.log(projection[i]);
-                    console.log(projectedLocations[i]);
                   }
 
                   bubbleGroup.
                   selectAll("circle")
-                  .data(projectedLocations)
+                  .data(projectedLocations,function(d) {
+                    console.log(d);
+                    return d;
+                  })
                   .enter().append("circle")
                   .attr("transform", function(d) {
                     console.log(d);
+                    console.log("Хей");
                     return "translate(" + d + ")"; })
                   .attr("r", 5/zoom.scale());
 

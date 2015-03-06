@@ -96,7 +96,7 @@ def main():
     with open(json_filename, 'w') as json_file:
         json_file.write(json.dumps([], cls=DateTimeEncoder))
 
-    #curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
+    curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
 
     up = 55.96
     down = 55.49

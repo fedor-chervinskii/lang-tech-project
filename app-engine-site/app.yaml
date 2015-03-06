@@ -22,8 +22,11 @@ handlers:
 - url: /parsing
   script: parsemanager.application
 
-- url: .*
+- url: /
   script: main.application
+
+- url: /parser
+  script: parsemanager.application
 
 libraries:
 - name: numpy

@@ -92,12 +92,21 @@
 
 
               setInterval(function () {
-                d3.json("tweetsNikita.json", function(error, tweets) {
-                  console.log("Start");
+              //  d3.json("tweetsNikita.json", function(error, tweets) {
+                  tweets = [];
+                  var randValue = Math.random();
+                  if (randValue < 0.5) {
+                    console.log("First");
+                    tweets = [{"location":[37.62, 55.69]},{"location":[37.64, 55.65]}]
+                  } else {
+                    console.log("Second");
+                    tweets = [{"location": [38.05, 55.65]}, {"location": [38.15, 55.75]}];
+                  }
+
                   var projectedLocations = [];
                   for (var i=0; i<tweets.length; i++) {
                     //TODO: Convert string to array in Python
-                    var location = JSON.parse(tweets[i]["location"]);
+                    var location = tweets[i]["location"];// JSON.parse(tweets[i]["location"]);
 
                     var lat = location[0];//Math.floor(location[0] * 1000 + 0.5)/1000;
                     var long = location[1];// Math.floor(location[1] * 1000 + 0.5)/1000;
@@ -106,18 +115,16 @@
 
                   bubbleGroup.
                   selectAll("circle")
-                  .data(projectedLocations,function(d) {
-                    console.log(d);
+                  .data(projectedLocations, function(d) {
                     return d;
                   })
                   .enter().append("circle")
                   .attr("transform", function(d) {
                     console.log(d);
-                    console.log("Хей");
                     return "translate(" + d + ")"; })
                   .attr("r", 5/zoom.scale());
 
-                });
+            //    });
 
               }, 3000);
 

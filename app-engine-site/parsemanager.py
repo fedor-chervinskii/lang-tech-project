@@ -5,12 +5,16 @@ import logging
 
 class ParseHandler(webapp.RequestHandler):
   def get(self):
+      self.response.write("HELLO GET PRE")
       geotwitter.main()
+      self.response.write("HELLO GET")
   def post(self):
+      self.response.write("HELLO POST PRE")
       geotwitter.main()
+      self.response.write("HELLO POST")
 
 logging.error('Before')
-application = webapp.WSGIApplication([('/parsing', ParseHandler)],
+application = webapp.WSGIApplication([('/parser', ParseHandler)],
                                      debug=True)
 logging.error('After')
 

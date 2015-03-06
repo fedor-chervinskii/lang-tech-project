@@ -13,7 +13,7 @@ from TweetModel import Tweet
 alchemyapi = AlchemyAPI()
 
 def getTargetedSentiment(myText, myKeyword, APIobject):
-    response = APIobject.sentiment_targeted('text', myText, myKeyword)
+    response = APIobject.sentiment_targeted('text', myText.lower(), myKeyword)
     if response['status'] == 'OK':
         if 'score' in response['docSentiment']:
             return response['docSentiment']['type'],response['docSentiment']['score']
@@ -98,6 +98,7 @@ class CustomStreamListener(tweepy.StreamListener):
             # Most errors we're going to see relate to the handling of UTF-8 messages (sorry)
             print(e)
 
+        print ('something')
         print usr + ":"
         print txt + '   '  #+ str(getSentiment(status.text,alchemyapi))
         try:
@@ -109,6 +110,8 @@ class CustomStreamListener(tweepy.StreamListener):
     def on_error(self, status_code):
         print >> sys.stderr, 'Encountered error with status code:', status_code
         return True # Don't kill the stream
+
+
 
     def on_timeout(self):
         print >> sys.stderr, 'Timeout...'
@@ -142,7 +145,7 @@ def main():
     right = 37.97
     left = 37.32
 
-    sapi = tweepy.streaming.Stream(auths[4], CustomStreamListener())
+    sapi = tweepy.streaming.Stream(auths[3], CustomStreamListener())
     sapi.filter(locations=[left, down, right, up])
 
 

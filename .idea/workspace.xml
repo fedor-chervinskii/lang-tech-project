@@ -2,22 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3e35776b-c2c9-48d7-af5d-9a55351eedb9" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/geotwitter.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/alchemyapi.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/api_key.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/api.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/auth.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/binder.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/cache.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/cursor.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/error.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/models.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/parsers.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/streaming.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/lib/tweepy/utils.py" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app-engine-site/parsing/parseManager.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app-engine-site/app.yaml" afterPath="$PROJECT_DIR$/app-engine-site/app.yaml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/smileparser.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tweets.db" afterPath="$PROJECT_DIR$/tweets.db" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/geotwitter.py" afterPath="$PROJECT_DIR$/geotwitter.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app-engine-site/geotwitter.py" afterPath="$PROJECT_DIR$/app-engine-site/geotwitter.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="lang-tech-project.iws" />
@@ -44,8 +32,8 @@
       <file leaf-file-name="geotwitter.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/geotwitter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.6470587" vertical-offset="0" max-vertical-offset="2160">
-              <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+            <state vertical-scroll-proportion="-8.384615" vertical-offset="652" max-vertical-offset="2220">
+              <caret line="58" column="12" selection-start-line="58" selection-start-column="12" selection-end-line="59" selection-end-column="75" />
               <folding>
                 <element signature="e#24#37#0" expanded="true" />
               </folding>
@@ -53,12 +41,36 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="geotwitter.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="smileparser.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/smileparser.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.31914893" vertical-offset="0" max-vertical-offset="423">
+              <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
+              <folding>
+                <element signature="e#30#57#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="emoji_database" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/emoji_database">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="90">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="geotwitter.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app-engine-site/geotwitter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.038961038" vertical-offset="0" max-vertical-offset="2175">
-              <caret line="1" column="7" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="7" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2415">
+              <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+              <folding>
+                <element signature="e#24#47#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -87,13 +99,15 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/app-engine-site/parsing/geotwitter.py" />
-        <option value="$PROJECT_DIR$/geotwitter.py" />
         <option value="$PROJECT_DIR$/app-engine-site/geotwitter.py" />
+        <option value="$PROJECT_DIR$/geotwitter.py" />
+        <option value="$PROJECT_DIR$/smileparser.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="23" />
+    <option name="x" value="90" />
+    <option name="y" value="63" />
     <option name="width" value="1366" />
     <option name="height" value="741" />
   </component>
@@ -139,7 +153,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -174,6 +187,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -189,7 +203,7 @@
       <console-settings />
     </option>
   </component>
-  <component name="RunManager" selected="Python.geotwitter">
+  <component name="RunManager" selected="Python.smileparser">
     <configuration default="false" name="geotwitter" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -207,6 +221,42 @@
       <RunnerSettings RunnerId="PyDebugRunner" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="geotwitter (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app-engine-site" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="lang-tech-project" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app-engine-site/geotwitter.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="smileparser" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="lang-tech-project" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/smileparser.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
@@ -331,12 +381,16 @@
       <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
-    <list size="1">
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Python.geotwitter" />
+      <item index="1" class="java.lang.String" itemvalue="Python.geotwitter (1)" />
+      <item index="2" class="java.lang.String" itemvalue="Python.smileparser" />
     </list>
     <recent_temporary>
-      <list size="1">
-        <item index="0" class="java.lang.String" itemvalue="Python.geotwitter" />
+      <list size="3">
+        <item index="0" class="java.lang.String" itemvalue="Python.smileparser" />
+        <item index="1" class="java.lang.String" itemvalue="Python.geotwitter" />
+        <item index="2" class="java.lang.String" itemvalue="Python.geotwitter (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -353,7 +407,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1366" height="741" extended-state="6" />
+    <frame x="90" y="63" width="1366" height="741" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -395,6 +449,90 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/geotwitter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2175">
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+          <folding>
+            <element signature="e#24#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app-engine-site/geotwitter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1165" max-vertical-offset="2400">
+          <caret line="99" column="8" selection-start-line="99" selection-start-column="8" selection-end-line="99" selection-end-column="8" />
+          <folding>
+            <element signature="e#24#47#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="645">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/geotwitter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2175">
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+          <folding>
+            <element signature="e#24#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app-engine-site/geotwitter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="2370">
+          <caret line="1" column="7" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="7" />
+          <folding>
+            <element signature="e#24#47#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="345" max-vertical-offset="645">
+          <caret line="23" column="31" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/geotwitter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="135" max-vertical-offset="2175">
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+          <folding>
+            <element signature="e#24#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app-engine-site/geotwitter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="2370">
+          <caret line="1" column="7" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="7" />
+          <folding>
+            <element signature="e#24#47#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="345" max-vertical-offset="645">
+          <caret line="23" column="31" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/geotwitter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1500" max-vertical-offset="2175">
@@ -529,21 +667,41 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app-engine-site/geotwitter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2415">
+          <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+          <folding>
+            <element signature="e#24#47#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/geotwitter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.6470587" vertical-offset="0" max-vertical-offset="2160">
-          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+        <state vertical-scroll-proportion="-8.384615" vertical-offset="652" max-vertical-offset="2220">
+          <caret line="58" column="12" selection-start-line="58" selection-start-column="12" selection-end-line="59" selection-end-column="75" />
           <folding>
             <element signature="e#24#37#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app-engine-site/geotwitter.py">
+    <entry file="file://$PROJECT_DIR$/emoji_database">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.038961038" vertical-offset="0" max-vertical-offset="2175">
-          <caret line="1" column="7" selection-start-line="1" selection-start-column="7" selection-end-line="1" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="410">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/smileparser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.31914893" vertical-offset="0" max-vertical-offset="423">
+          <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
+          <folding>
+            <element signature="e#30#57#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

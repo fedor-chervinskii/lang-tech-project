@@ -37,6 +37,19 @@ class DateTimeEncoder(json.JSONEncoder):
         return encoded_object
 
 class CustomStreamListener(tweepy.StreamListener):
+
+    def smile_check(self, myText):
+
+        emostr = []
+        b = myText.encode('unicode_escape').split('\\')
+        c = [point.replace('000','+').upper() for point in b if len(point) > 8 and point[0] == 'U']
+        [emostr.append(emo_db[emo[:7]]) for emo in c if emo[:7] in emo_db]
+        b = myText.encode('unicode_escape').replace('\\u04','')
+        for item in emo_txt_db:
+            if item in b:
+                emostr.append(emo_txt_db[item])
+        return emostr
+
     def on_status(self, status):
         try:
             tid = status.id_str
@@ -65,9 +78,12 @@ class CustomStreamListener(tweepy.StreamListener):
         except Exception as e:
             # Most errors we're going to see relate to the handling of UTF-8 messages (sorry)
             print(e)
-        print 'something'
+
         print usr + ":"
-        print txt + '   '  #+ str(getSentiment(status.text,alchemyapi))
+        print txt
+
+        #rz = self.smile_check(txt)
+        #print str(getSentiment(status.text + ' '.join(rz),alchemyapi))
         try:
             print coord
         except:
@@ -82,8 +98,7 @@ class CustomStreamListener(tweepy.StreamListener):
         print >> sys.stderr, 'Timeout...'
         return True # Don't kill the stream
 
-    def smile_check(self, myText):
-        dct = {':)':'positive', ':(':'negative', '':'', '':''}
+
 
 
 def main():
@@ -135,6 +150,10 @@ if __name__ == "__main__":
 
     auths = []
     json_filename = 'tweets.json'
+    emo_json = open('emoji_database','r')
+    emo_db = json.load(emo_json)
+    emo_txt_json = open('emoji_txt_db.json','r')
+    emo_txt_db = json.load(emo_txt_json)
     conn = sqlite3.connect('tweets.db')
     curs = conn.cursor()
     main()

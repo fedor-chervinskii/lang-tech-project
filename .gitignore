@@ -14,3 +14,5 @@
 .idea/workspace.xml
 
 tweets.json
+
+*.xml

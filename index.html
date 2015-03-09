@@ -41,7 +41,7 @@
                   .domain([-1.0, -0.8, -0.6, -0.4, -0.2, 0.0,.2, .4, .6, .8, 1.0])
                   .range(["#8e0152","#c51b7d","#de77ae","#f1b6da","#fde0ef","#f7f7f7","#e6f5d0","#b8e186","#7fbc41","#4d9221","#276419"]);
 
-      var projection = d3.geo.mercator()
+      projection = d3.geo.mercator()
       .rotate([-10.7,4.2,-6.3])
       //.rotate([0,0,0])
       .center([38.4, 55.8])
@@ -51,7 +51,7 @@
       var path = d3.geo.path()
       .projection(projection);
 
-      var svg = d3.select("body").append("svg")
+      svg = d3.select("body").append("svg")
       .attr("width", width)
       .attr("height", height);
 
@@ -74,37 +74,39 @@
 
               setInterval(function () {
 
-                d3.json("tweets.json", function(error, tweets) {
-
-                  var projectedLocations = [];
-
-                  for (var i=0; i<tweets.length; i++) {
-
-                    var tweet = tweets[i];
-                    var lat = Math.floor(tweets[i]["location"][0]*1000+0.5)/1000;
-                    var long = Math.floor(tweets[i]["location"][1]*1000+0.5)/1000;
-                    projectedLocations[i] = projection([lat,long]);
-
-                    updateRegionsWithTweet(tweet)
-
-                  }
-
-                  addTweetBubbles(projectedLocations);
-
+                d3.json("http://128.199.62.25/gettweets?latest=1", function(error, tweets) {
+                  if (error)
+                    console.log(error);
+                  addTweetBubbles(tweets);
                 });
 
-              }, 3000);
+              }, 1000);
 
               });
 
-addTweetBubbles = function (projectedLocations) {
-    bubbleGroup.
-    selectAll("circle")
-    .data(projectedLocations)
-    .enter().append("circle")
-    .attr("transform", function(d) {
-      console.log(d);
-      return "translate(" + d + ")";})
+addTweetBubbles = function (tweets) {
+
+    var circlesSelection = bubbleGroup.selectAll("circle")
+    .data(tweets, function (tweet) {
+      console.log("Data");
+      console.log(tweet.tid);
+      return tweet.tid;
+    });
+
+    circlesSelection.enter()
+    .append("circle")
+    .attr("transform", function(tweet) {
+
+       var lat = Math.floor(tweet["lat"]*1000+0.5)/1000;
+       var long = Math.floor(tweet["long"]*1000+0.5)/1000;
+       var projectedLocation = projection([lat,long]);
+
+      console.log("Added Locations:");
+      console.log(tweet);
+
+      updateRegionsWithTweet(tweet);
+
+      return "translate(" + projectedLocation + ")";})
     .attr("r", 5/zoom.scale());
 }
 
@@ -118,10 +120,12 @@ updateRegionsWithTweet = function (tweet) {
       score = - score;
 
     for (var polygon = 0; polygon < d.geometry.coordinates.length; polygon++)
-      if (pointInPolygon(tweet["location"], d.geometry.coordinates[polygon]))
+      if (pointInPolygon([tweet["lat"],tweet["long"]] , d.geometry.coordinates[polygon])) {
+        console.log(d.properties.NAME);
         return color(score);
-      else
+      } else {
         return "#f7f7f7";
+      }
 
   });
 
@@ -150,11 +154,11 @@ addZoom = function() {
         redBubbleGroup.attr("transform","translate("+
               d3.event.translate.join(",")+")scale("+d3.event.scale+")");
         redBubbleGroup.selectAll("circle").attr("r", function() {
-          return 5/d3.event.scale; })
+          return tweetBubbleRaius/d3.event.scale; })
         bubbleGroup.attr("transform","translate("+
               d3.event.translate.join(",")+")scale("+d3.event.scale+")");
         bubbleGroup.selectAll("circle").attr("r", function() {
-                return 5/d3.event.scale; })
+                return tweetBubbleRaius/d3.event.scale; })
         regionsGroup.selectAll("path")
             .attr("d", path.projection(projection));
 

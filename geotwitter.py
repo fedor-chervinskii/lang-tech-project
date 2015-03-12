@@ -44,10 +44,11 @@ class CustomStreamListener(tweepy.StreamListener):
         b = myText.encode('unicode_escape').split('\\')
         c = [point.replace('000','+').upper() for point in b if len(point) > 8 and point[0] == 'U']
         [emostr.append(emo_db[emo[:7]]) for emo in c if emo[:7] in emo_db]
-        b = myText.encode('unicode_escape').replace('\\u04','')
-        for item in emo_txt_db:
-            if item in b:
-                emostr.append(emo_txt_db[item])
+        #b = myText.encode('unicode_escape').replace('\\u04','')
+        #for item in emo_txt_db:
+        #    if item in b:
+        #        emostr.append(emo_txt_db[item])
+        print emostr
         return emostr
 
     def on_status(self, status):
@@ -82,8 +83,8 @@ class CustomStreamListener(tweepy.StreamListener):
         print usr + ":"
         print txt
 
-        #rz = self.smile_check(txt)
-        #print str(getSentiment(status.text + ' '.join(rz),alchemyapi))
+        rz = self.smile_check(txt)
+        print str(getSentiment(status.text + ' '.join(rz),alchemyapi))
         try:
             print coord
         except:
@@ -111,7 +112,7 @@ def main():
     with open(json_filename, 'w') as json_file:
         json_file.write(json.dumps([], cls=DateTimeEncoder))
 
-    curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
+    #curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
 
     up = 55.96
     down = 55.49
@@ -152,8 +153,8 @@ if __name__ == "__main__":
     json_filename = 'tweets.json'
     emo_json = open('emoji_database','r')
     emo_db = json.load(emo_json)
-    emo_txt_json = open('emoji_txt_db.json','r')
-    emo_txt_db = json.load(emo_txt_json)
+    #emo_txt_json = open('emoji_txt_db.json','r')
+    #emo_txt_db = json.load(emo_txt_json)
     conn = sqlite3.connect('tweets.db')
     curs = conn.cursor()
     main()

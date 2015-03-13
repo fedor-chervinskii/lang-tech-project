@@ -12,7 +12,7 @@
     }
 
     .bubble {
-      fill-opacity: .5;
+      fill-opacity: .9;
       stroke: #000000;
       fill:#000000;
       stroke-width: .1px;
@@ -33,9 +33,14 @@
     <script src="point-in-polygon.js"></script>
     <script>
 
-      var width = 1300,
-          height = 600;
-      tweetBubbleRaius = 5;
+          var width = window.innerWidth
+                    || document.documentElement.clientWidth
+                    || document.body.clientWidth;
+
+          var height = window.innerHeight
+                    || document.documentElement.clientHeight
+                    || document.body.clientHeight;
+      tweetBubbleRaius = 3;
 
       var color = d3.scale.threshold()
                   .domain([-1.0, -0.8, -0.6, -0.4, -0.2, 0.0,.2, .4, .6, .8, 1.0])
@@ -92,6 +97,11 @@ addTweetBubbles = function (tweets) {
       console.log(tweet.tid);
       return tweet.tid;
     });
+//  console.log(d3.event.scale);
+  var currentScale = 1.0;
+  // if (d3.event.scale > 0)
+  //   currentScale = d3.event.scale;
+
 
     circlesSelection.enter()
     .append("circle")
@@ -107,7 +117,7 @@ addTweetBubbles = function (tweets) {
       updateRegionsWithTweet(tweet);
 
       return "translate(" + projectedLocation + ")";})
-    .attr("r", 5/zoom.scale());
+    .attr("r", tweetBubbleRaius/Math.pow(currentScale,0.5));
 }
 
 updateRegionsWithTweet = function (tweet) {
@@ -124,7 +134,7 @@ updateRegionsWithTweet = function (tweet) {
         console.log(d.properties.NAME);
         return color(score);
       } else {
-        return "#f7f7f7";
+        return color(-score);
       }
 
   });
@@ -158,7 +168,7 @@ addZoom = function() {
         bubbleGroup.attr("transform","translate("+
               d3.event.translate.join(",")+")scale("+d3.event.scale+")");
         bubbleGroup.selectAll("circle").attr("r", function() {
-                return tweetBubbleRaius/d3.event.scale; })
+                return tweetBubbleRaius/Math.pow(d3.event.scale,0.5); })
         regionsGroup.selectAll("path")
             .attr("d", path.projection(projection));
 

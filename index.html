@@ -76,6 +76,7 @@
               bubbleGroup = svg.append("g").attr("class", "bubble");
               addRedBubble();
               addZoom();
+            //  makeInitialColoring();
 
               setInterval(function () {
 
@@ -127,11 +128,32 @@ updateRegionsWithTweet = function (tweet) {
 
     var score = Math.random();
     if (score < 0.5)
-      score = - score;
+      score = - score-0.3;
 
     for (var polygon = 0; polygon < d.geometry.coordinates.length; polygon++)
       if (pointInPolygon([tweet["lat"],tweet["long"]] , d.geometry.coordinates[polygon])) {
         console.log(d.properties.NAME);
+        return color(score);
+      } else {
+        console.log(d3.select(this).style("fill"));
+        return d3.select(this).style("fill");
+      }
+
+  });
+
+}
+
+makeInitialColoring = function () {
+  regionsGroup
+  .selectAll(".region")
+  .style("fill", function(d) {
+
+    var score = Math.random();
+    if (score < 0.5)
+      score = - score;
+
+    for (var polygon = 0; polygon < d.geometry.coordinates.length; polygon++)
+      if (pointInPolygon([38.8, 55.4] , d.geometry.coordinates[polygon])) {
         return color(score);
       } else {
         return color(-score);

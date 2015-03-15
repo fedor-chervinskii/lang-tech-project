@@ -83,7 +83,13 @@
                 d3.json("http://128.199.62.25/gettweets?latest=1", function(error, tweets) {
                   if (error)
                     console.log(error);
-                  addTweetBubbles(tweets);
+                    defaultCoordinates = [37.619899, 55.753301];
+                    for (var i = tweets.length -1; i >= 0 ; i--){
+                      if (tweets[i]["lat"] == defaultCoordinates[0] && tweets[i]["long"] == defaultCoordinates[1]){
+                        elements.splice(i, 1);
+                      }
+                    }
+                    addTweetBubbles(tweets);
                 });
 
               }, 1000);
@@ -94,14 +100,9 @@ addTweetBubbles = function (tweets) {
 
     var circlesSelection = bubbleGroup.selectAll("circle")
     .data(tweets, function (tweet) {
-      console.log("Data");
       console.log(tweet.tid);
       return tweet.tid;
     });
-//  console.log(d3.event.scale);
-  var currentScale = 1.0;
-  // if (d3.event.scale > 0)
-  //   currentScale = d3.event.scale;
 
 
     circlesSelection.enter()
@@ -118,29 +119,44 @@ addTweetBubbles = function (tweets) {
       updateRegionsWithTweet(tweet);
 
       return "translate(" + projectedLocation + ")";})
-    .attr("r", tweetBubbleRaius/Math.pow(currentScale,0.5));
+    .attr("r",0)
+    .transition()
+    .duration(500)
+    .attr("r", tweetBubbleRaius*2/Math.pow(zoom.scale(), 0.5))
+    .each("end", function() {
+      d3.select(this)
+      .transition()
+      .duration(500)
+      .attr("r", tweetBubbleRaius/Math.pow(zoom.scale(),0.5));
+   });
 }
 
 updateRegionsWithTweet = function (tweet) {
-  regionsGroup
+  var updatedRegions = regionsGroup
   .selectAll(".region")
-  .style("fill", function(d) {
-
-    var score = Math.random();
-    if (score < 0.5)
-      score = - score-0.3;
+  .filter(function(d) {
 
     for (var polygon = 0; polygon < d.geometry.coordinates.length; polygon++)
       if (pointInPolygon([tweet["lat"],tweet["long"]] , d.geometry.coordinates[polygon])) {
+        console.log("Region:");
         console.log(d.properties.NAME);
-        return color(score);
-      } else {
-        console.log(d3.select(this).style("fill"));
-        return d3.select(this).style("fill");
-      }
-
+        return true;
+        }
+    return false;
   });
 
+  updatedRegions
+  .transition()
+  .duration(500)
+  .style("fill", function(d) {
+
+    var score = Math.random();
+
+    if (score < 0.5)
+      score = - score - 0.5;
+
+    return color(score);
+  });
 }
 
 makeInitialColoring = function () {

@@ -42,6 +42,7 @@
                     || document.body.clientHeight;
       tweetBubbleRaius = 3;
 
+
       var color = d3.scale.threshold()
                   .domain([-1.0, -0.8, -0.6, -0.4, -0.2, 0.0,.2, .4, .6, .8, 1.0])
                   .range(["#8e0152","#c51b7d","#de77ae","#f1b6da","#fde0ef","#f7f7f7","#e6f5d0","#b8e186","#7fbc41","#4d9221","#276419"]);
@@ -55,6 +56,10 @@
 
       var path = d3.geo.path()
       .projection(projection);
+
+      lastTweetLittleDiv = d3.select("body").append("tweet")
+      .attr("width", 200)
+      .attr("height", 50)
 
       svg = d3.select("body").append("svg")
       .attr("width", width)
@@ -100,7 +105,6 @@ addTweetBubbles = function (tweets) {
 
     var circlesSelection = bubbleGroup.selectAll("circle")
     .data(tweets, function (tweet) {
-      console.log(tweet.tid);
       return tweet.tid;
     });
 
@@ -115,6 +119,7 @@ addTweetBubbles = function (tweets) {
 
       console.log("Added Locations:");
       console.log(tweet);
+      lastTweetLittleDiv.text(tweet["content"]);
 
       updateRegionsWithTweet(tweet);
 

@@ -85,13 +85,13 @@
 
               setInterval(function () {
 
-                d3.json("http://128.199.62.25/gettweets?latest=1", function(error, tweets) {
+                d3.json("http://128.199.62.25/gettweets?latest=3", function(error, tweets) {
                   if (error)
                     console.log(error);
                     defaultCoordinates = [37.619899, 55.753301];
                     for (var i = tweets.length -1; i >= 0 ; i--){
                       if (tweets[i]["lat"] == defaultCoordinates[0] && tweets[i]["long"] == defaultCoordinates[1]){
-                        elements.splice(i, 1);
+                        tweets.splice(i, 1);
                       }
                     }
                     addTweetBubbles(tweets);

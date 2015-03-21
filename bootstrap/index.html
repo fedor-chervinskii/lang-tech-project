@@ -8,67 +8,39 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="tweetsBarChart.css" rel="stylesheet">
+    <link href="map.css" rel="stylesheet">
 
   </head>
 
-  <style>
-
-    path {
-      fill: none;
-      stroke: #000;
-      fill:#f7f7f7;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-      stroke-width: .5px;
-    }
-
-    .bubble {
-      fill-opacity: .9;
-      stroke: #000000;
-      fill:#000000;
-      stroke-width: .1px;
-    }
-
-    .redBubble {
-      fill-opacity: .5;
-      stroke: #ff0000;
-      fill:#ff0000;
-      stroke-width: .5px;
-    }
-
-    </style>
   <body>
-
-
-    <form class="navbar-form navbar-left" action = "" role="search">
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Search for a tweet" id="SearchForm">
-      </div>
-      <button type="submit" class="btn btn-default" onclick="showTweets(SearchForm.value)">Search </button>
-      <p class="navbar-text navbar-right" id="CurrentTweet"></p>
-    </form>
-
-    <!-- <form>
-      Query: <input type="text" name="SearchForm" id="SearchForm"><br>
-      <input type = "button" value="Search"  onclick="showTweets(SearchForm.value)">
-    </form> -->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
     <script src="point-in-polygon.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+    <div>
+      <input type="text" placeholder="Search for a tweet" id="SearchForm">
+      <button type="submit" onclick="showTweets(SearchForm.value)">Search </button>
+      <p id="CurrentTweet"> Current Tweet</p>
+    </div>
 
     <script>
-
-          var width = window.innerWidth
+    mapToBarRatio = 2.0/3.0;
+    width = window.innerWidth
                     || document.documentElement.clientWidth
                     || document.body.clientWidth;
 
-          var height = window.innerHeight
+    height = window.innerHeight
                     || document.documentElement.clientHeight
                     || document.body.clientHeight;
-      tweetBubbleRaius = 3;
+    tweetBubbleRaius = 3;
+
+    mapWidth = Math.floor(width*mapToBarRatio);
+    mapHeigth = height;
 
       //old range [-1.0, -0.875, -0.75, -0.625, -0.5, -0.375, -0.25, -0.125, 0.0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0]
       var color = d3.scale.threshold()
@@ -77,21 +49,16 @@
 
       projection = d3.geo.mercator()
       .rotate([-10.7,4.2,-6.3])
-      //.rotate([0,0,0])
       .center([38.4, 55.8])
       .scale(20000)
-      .translate([width / 2, height / 2]);
+      .translate([mapWidth / 2, mapHeigth / 2]);
 
       var path = d3.geo.path()
       .projection(projection);
 
-      // lastTweetLittleDiv = d3.select("body").append("tweet")
-      // .attr("width", 200)
-      // .attr("height", 50)
-
       svg = d3.select("body").append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .attr("width", mapWidth)
+      .attr("height", mapHeigth);
 
       d3.json("mo.geojson", function(error, moscow) {
               if (error) return console.error(error);
@@ -116,7 +83,6 @@
                 d3.json("http://128.199.62.25/gettweets?latest=3", function(error, tweets) {
                   if (error)
                     console.log(error);
-                    console.log(tweets);
                     defaultCoordinates = [37.619899, 55.753301];
                     for (var i = tweets.length -1; i >= 0 ; i--){
                       if (tweets[i]["lat"] == defaultCoordinates[0] && tweets[i]["long"] == defaultCoordinates[1]){
@@ -249,10 +215,124 @@ addZoom = function() {
   svg.call(zoom)
 }
 
-function showTweets(request){
-
-    alert("This is request : "+request)
+function showTweets(request) {
+  addBarChartFor(request);
+  //alert("This is request : " + request)
 
 }
 
+function addBarChartFor(keyword) {
+  var tweetsHeigth = height * 0.75;
+  var margin = {top: 20, right: 40, bottom: tweetsHeigth, left: 40},
+      barWidth = Math.floor(width*(1.0-mapToBarRatio) - margin.left - margin.right),
+      barHeight = Math.floor(height - margin.top - margin.bottom);
+
+  var tweetFormat = d3.format(".");
+
+  var x = d3.scale.ordinal()
+      .rangeRoundBands([0, barWidth], .1);
+
+  var y = d3.scale.linear()
+      .range([barHeight, 0]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .tickFormat(tweetFormat);
+
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      console.log("Tip data:");
+      console.log(d.tweets);
+      return "<strong>Total:</strong> <span style='color:red'>" + d.tweets.length + "</span>";
+    })
+
+  barSvg = d3.select("body").append("svg")
+          .attr("width", barWidth)
+          .attr("height", height)
+          .attr("transform", "translate(" + Math.floor(width*mapToBarRatio) + ",0)");
+  barGroup = barSvg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  barSvg.call(tip);
+
+  d3.json("tweets.json", function(error, data) {
+    console.log("JSON");
+    x.domain(data.map(function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return d.tweets.length; })]);
+
+    barGroup.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + barHeight + ")")
+        .call(xAxis);
+
+    barGroup.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Tweets");
+
+    barGroup.selectAll(".bar")
+        .data(data)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.date); })
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) { return y(d.tweets.length); })
+        .attr("height", function(d) { return barHeight - y(d.tweets.length); })
+        .on('mouseover', tip.show)
+        .on('click', function(d,i) {
+            addTweetsList(d);
+        })
+        .on('mouseout', tip.hide)
+
+  });
+}
+
+addTweetsList = function (tweets) {
+  tweets = tweets["tweets"];
+  console.log(tweets);
+
+var tweet = d3.select("body")
+    .selectAll('.tweetdiv')
+    .data(tweets, function(d) { return d.tid; });
+
+var enterDiv = tweet.enter()
+    .append("div")
+    .attr("class", "tweetdiv")
+    .style("opacity", 0);
+
+enterDiv.append("div")
+    .attr("class", "username")
+    .text(function(d) { return "@" + d.username });
+
+enterDiv.append("div")
+    .attr("class", "text")
+    .text(function(d) { return d.content });
+
+console.log("DIVS:");
+console.log(enterDiv);
+
+tweet.transition()
+    .delay(200)
+    .style("opacity", 1);
+
+tweet.exit()
+    .transition()
+    .duration(200)
+    .style("opacity", 0)
+    .remove();
+
+}
 </script>
+
+</body>

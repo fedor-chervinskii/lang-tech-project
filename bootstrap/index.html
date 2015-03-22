@@ -221,7 +221,7 @@ function showTweets(request) {
 
 }
 
-function addBarChartFor(keyword) {
+  function addBarChartFor(keyword) {
   var tweetsHeigth = height * 0.75;
   var margin = {top: 20, right: 40, bottom: tweetsHeigth, left: 40},
       barWidth = Math.floor(width*(1.0-mapToBarRatio) - margin.left - margin.right),
@@ -261,8 +261,9 @@ function addBarChartFor(keyword) {
 
   barSvg.call(tip);
 
-  d3.json("tweets.json", function(error, data) {
-    console.log("JSON");
+  d3.json("http://128.199.62.25/gettweets?hours=10&keyword=".concat(keyword), function(error, data) {
+    console.log("http://128.199.62.25/gettweets?hours=10&keyword=".concat(keyword));
+    console.log(error);
     x.domain(data.map(function(d) { return d.date; }));
     y.domain([0, d3.max(data, function(d) { return d.tweets.length; })]);
 

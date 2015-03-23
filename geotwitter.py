@@ -86,8 +86,9 @@ class CustomStreamListener(tweepy.StreamListener):
 
         URLless_txt = re.sub(r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}     /)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))', '', txt)
         Nickless_txt = ' '.join([word for word in URLless_txt.split() if not word.startswith('@')])
+        print Nickless_txt
         rz = self.smile_check(Nickless_txt)
-        print str(getSentiment(status.text + ' '.join(rz),alchemyapi))
+        print str(getSentiment(Nickless_txt + ' '.join(rz),alchemyapi))
         try:
             print coord
         except:

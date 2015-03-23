@@ -5,6 +5,7 @@ import time
 import sqlite3
 from datetime import datetime
 import sys
+import re
 #import matplotlib.pyplot as plt
 #from drawnow import drawnow
 from alchemyapi import AlchemyAPI
@@ -83,7 +84,9 @@ class CustomStreamListener(tweepy.StreamListener):
         print usr + ":"
         print txt
 
-        rz = self.smile_check(txt)
+        URLless_txt = re.sub(r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}     /)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))', '', txt)
+        Nickless_txt = ' '.join([word for word in URLless_txt.split() if not word.startswith('@')])
+        rz = self.smile_check(Nickless_txt)
         print str(getSentiment(status.text + ' '.join(rz),alchemyapi))
         try:
             print coord

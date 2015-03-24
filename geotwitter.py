@@ -69,6 +69,7 @@ class CustomStreamListener(tweepy.StreamListener):
             with open(json_filename,'w') as json_file:
                 json_file.write(json.dumps(json_data, cls=DateTimeEncoder))
 
+
             # sqlite database
             curs.execute("insert into tweets (tid, username, created_at, content, coordinates, source) values(?, ?, ?, ?, ?, ?)", (tid, usr, cat, txt, str(coord), src))
             conn.commit()

@@ -1,7 +1,19 @@
 __author__ = 'denisantyukhov'
+from urllib.request import urlopen
 from BeautifulSoup import *
 import urllib2
 import json
+
+import urllib2
+
+proxy  = urllib2.ProxyHandler({'https': '210.101.131.227:8080'})
+opener = urllib2.build_opener(proxy)
+urllib2.install_opener(opener)
+
+my_ip = urllib2.urlopen('http://whatthehellismyip.com/?ipraw').read()
+print my_ip
+
+
 dct = {}
 url = "http://cool-smileys.com/text-emoticons"
 soup = BeautifulSoup(urllib2.urlopen(url).read())

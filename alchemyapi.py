@@ -18,14 +18,10 @@ from __future__ import print_function
 
 import requests
 
-try:
-    from urllib.request import urlopen
-    from urllib.parse import urlparse
-    from urllib.parse import urlencode
-except ImportError:
-    from urlparse import urlparse
-    from urllib2 import urlopen
-    from urllib import urlencode
+
+from urlparse import urlparse
+import urllib2
+from urllib import urlencode
 
 try:
     import json
@@ -46,6 +42,7 @@ if __name__ == '__main__':
     OUTPUT:
     none
     """
+
 
     import sys
     if len(sys.argv) == 2 and sys.argv[1]:
@@ -138,6 +135,11 @@ class AlchemyAPI:
         Initializes the SDK so it can send requests to AlchemyAPI for analysis.
         It loads the API key from api_key.txt and configures the endpoints.
         """
+        proxies = ['210.101.131.227:8080', '123.58.129.48:80', '119.6.144.74:82', '94.59.244.37:8118', '120.198.243.115:95']
+        use = 0
+        proxy  = urllib2.ProxyHandler({'https': proxies[use]})
+        opener = urllib2.build_opener(proxy)
+        urllib2.install_opener(opener)
 
         import sys
         try:

@@ -1,5 +1,0 @@
-cron:
-- description: Geotwitter
-  url: /parsing
-  schedule: every thursday 15:32
-  timezone: Europe/Moscow

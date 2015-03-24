@@ -26,7 +26,7 @@ def getSentiment(myText, APIobject):
         if 'score' in response['docSentiment']:
             return response['docSentiment']['type'],response['docSentiment']['score']
     else:
-        print('Error in sentiment analysis call: ', response['statusInfo'])
+        pass
 
 
 class DateTimeEncoder(json.JSONEncoder):
@@ -45,11 +45,6 @@ class CustomStreamListener(tweepy.StreamListener):
         b = myText.encode('unicode_escape').split('\\')
         c = [point.replace('000','+').upper() for point in b if len(point) > 8 and point[0] == 'U']
         [emostr.append(emo_db[emo[:7]]) for emo in c if emo[:7] in emo_db]
-        #b = myText.encode('unicode_escape').replace('\\u04','')
-        #for item in emo_txt_db:
-        #    if item in b:
-        #        emostr.append(emo_txt_db[item])
-        print emostr
         return emostr
 
     def on_status(self, status):
@@ -86,9 +81,13 @@ class CustomStreamListener(tweepy.StreamListener):
 
         URLless_txt = re.sub(r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}     /)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))', '', txt)
         Nickless_txt = ' '.join([word for word in URLless_txt.split() if not word.startswith('@')])
-        print Nickless_txt
         rz = self.smile_check(Nickless_txt)
-        print str(getSentiment(Nickless_txt + ' '.join(rz),alchemyapi))
+        response = getSentiment(Nickless_txt + ' '.join(rz),alchemyapi)
+
+        if response is None:
+            response = (u'None', u'0')
+
+        print response
         try:
             print coord
         except:

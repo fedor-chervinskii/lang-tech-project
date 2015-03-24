@@ -13,7 +13,6 @@ from alchemyapi import AlchemyAPI
 alchemyapi = AlchemyAPI()
 
 def getTargetedSentiment(myText, myKeyword, APIobject):
-    response = APIobject.sentiment_targeted('text', myText, myKeyword)
     if response['status'] == 'OK':
         if 'score' in response['docSentiment']:
             return response['docSentiment']['type'],response['docSentiment']['score']
@@ -21,12 +20,22 @@ def getTargetedSentiment(myText, myKeyword, APIobject):
         print('Error in targeted sentiment analysis call: ', response['statusInfo'])
 
 def getSentiment(myText, APIobject):
-    response = APIobject.sentiment('text', myText)
+    URLless_txt = re.sub(r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}     /)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))', '', myText)
+    Nickless_txt = ' '.join([word for word in URLless_txt.split() if not word.startswith('@')])
+    response = APIobject.sentiment('text', Nickless_txt)
     if response['status'] == 'OK':
         if 'score' in response['docSentiment']:
             return response['docSentiment']['type'],response['docSentiment']['score']
-    else:
-        pass
+    if response is None:
+        print ('error')
+        response = (u'None', u'0')
+
+def smile_check(myText):
+    emostr = []
+    b = myText.encode('unicode_escape').split('\\')
+    c = [point.replace('000','+').upper() for point in b if len(point) > 8 and point[0] == 'U']
+    [emostr.append(emo_db[emo[:7]]) for emo in c if emo[:7] in emo_db]
+    return emostr
 
 
 class DateTimeEncoder(json.JSONEncoder):
@@ -39,13 +48,6 @@ class DateTimeEncoder(json.JSONEncoder):
 
 class CustomStreamListener(tweepy.StreamListener):
 
-    def smile_check(self, myText):
-
-        emostr = []
-        b = myText.encode('unicode_escape').split('\\')
-        c = [point.replace('000','+').upper() for point in b if len(point) > 8 and point[0] == 'U']
-        [emostr.append(emo_db[emo[:7]]) for emo in c if emo[:7] in emo_db]
-        return emostr
 
     def on_status(self, status):
         try:
@@ -77,16 +79,18 @@ class CustomStreamListener(tweepy.StreamListener):
             # Most errors we're going to see relate to the handling of UTF-8 messages (sorry)
             print(e)
 
+        with open('count.txt','r') as count_file:
+            cnt = int(count_file.read().strip())
+            count_file.close()
+
+        with open('count.txt','w') as count_file:
+            count_file.write(str(cnt+1))
+            count_file.close()
         print usr + ":"
         print txt
+        response = getSentiment(txt + ' '.join(smile_check(txt)),alchemyapi)
 
-        URLless_txt = re.sub(r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}     /)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))', '', txt)
-        Nickless_txt = ' '.join([word for word in URLless_txt.split() if not word.startswith('@')])
-        rz = self.smile_check(Nickless_txt)
-        response = getSentiment(Nickless_txt + ' '.join(rz),alchemyapi)
 
-        if response is None:
-            response = (u'None', u'0')
 
         print response
         try:

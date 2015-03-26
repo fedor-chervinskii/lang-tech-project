@@ -13,6 +13,27 @@
 
   </head>
 
+  <style>
+  div.tweetsPosition {
+      position: fixed;
+      right: 50px;
+      top: 300px;
+      height: 300px;
+      overflow:scroll;
+      overflow-x:hidden;
+  }
+
+  .tweetText {
+    width: 400px
+  }
+
+  .tweetUser {
+    font-weight: bold;
+    width: 400px;
+  }
+
+  </style>
+
   <body>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -26,6 +47,9 @@
       <input type="text" placeholder="Search for a tweet" id="SearchForm">
       <button type="submit" onclick="showTweets(SearchForm.value)">Search </button>
       <p id="CurrentTweet"> Current Tweet</p>
+    </div>
+
+    <div class="tweetsPosition">
     </div>
 
     <script>
@@ -216,16 +240,31 @@ addZoom = function() {
 }
 
 function showTweets(request) {
+  removeCurrentChart();
   addBarChartFor(request);
   //alert("This is request : " + request)
 
 }
 
-  function addBarChartFor(keyword) {
+function removeCurrentChart() {
+  d3.select(".barSvg").transition()
+  .duration(400)
+  .style("opacity", 0)
+  .remove();
+
+  d3.select(".tweetsPosition")
+      .selectAll('.tweetdiv')
+      .transition()
+      .duration(400)
+      .style("opacity", 0)
+      .remove();
+}
+
+function addBarChartFor(keyword) {
   var tweetsHeigth = height * 0.75;
-  var margin = {top: 20, right: 40, bottom: tweetsHeigth, left: 40},
+  var margin = {top: 5, right: 40, left: 40},
       barWidth = Math.floor(width*(1.0-mapToBarRatio) - margin.left - margin.right),
-      barHeight = Math.floor(height - margin.top - margin.bottom);
+      barHeight = 200;//Math.floor(height - margin.top - margin.bottom);
 
   var tweetFormat = d3.format(".");
 
@@ -254,16 +293,16 @@ function showTweets(request) {
     })
 
   barSvg = d3.select("body").append("svg")
+          .attr("class", "barSvg")
           .attr("width", barWidth)
           .attr("height", height)
           .attr("transform", "translate(" + Math.floor(width*mapToBarRatio) + ",0)");
   barGroup = barSvg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   barSvg.call(tip);
-
-  d3.json("http://128.199.62.25/gettweets?hours=10&keyword=".concat(keyword), function(error, data) {
-    console.log("http://128.199.62.25/gettweets?hours=10&keyword=".concat(keyword));
-    console.log(error);
+//http://128.199.62.25/gettweets?hours=10&keyword=.concat(keyword)
+  d3.json("http://128.199.62.25/gettweets?month=3&keyword=".concat(keyword), function(error, data) {
+   // console.log("http://128.199.62.25/gettweets?hours=10&keyword=".concat(keyword));
     x.domain(data.map(function(d) { return d.date; }));
     y.domain([0, d3.max(data, function(d) { return d.tweets.length; })]);
 
@@ -303,7 +342,7 @@ addTweetsList = function (tweets) {
   tweets = tweets["tweets"];
   console.log(tweets);
 
-var tweet = d3.select("body")
+var tweet = d3.select(".tweetsPosition")
     .selectAll('.tweetdiv')
     .data(tweets, function(d) { return d.tid; });
 
@@ -313,11 +352,11 @@ var enterDiv = tweet.enter()
     .style("opacity", 0);
 
 enterDiv.append("div")
-    .attr("class", "username")
+    .attr("class", "tweetUser")
     .text(function(d) { return "@" + d.username });
 
 enterDiv.append("div")
-    .attr("class", "text")
+    .attr("class", "tweetText")
     .text(function(d) { return d.content });
 
 console.log("DIVS:");

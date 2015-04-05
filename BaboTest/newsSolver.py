@@ -1,6 +1,7 @@
-import getTasks
-import tasksParser as tasksParser
+from getTasks import getTasks
+from tasksParser import *
 tasks = getTasks()
 for i,task in enumerate(tasks):
-    taskInfo = tasksParser.parseTask(task)
-    //geoTwitter(taskInfo["searchKeywords"])
+    taskInfo = parseTask(task)
+    print taskInfo['searchKeywords']
+    #geoTwitter(taskInfo["searchKeywords"])

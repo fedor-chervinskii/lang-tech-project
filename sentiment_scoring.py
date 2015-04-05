@@ -51,7 +51,7 @@ def main():
         except:
             print 'tweet #%i scoring None %s' % (i,txt)
     data['score'] = scores
-    con = sqlite3.connect('tweets_zatmenie2_scored.db')
+    con = sqlite3.connect('tweets_nemtsov2_scored.db')
     data.to_sql('tweets',con,index = False)
     conn.close()
 
@@ -59,6 +59,6 @@ if __name__ == "__main__":
 
     emo_json = open('emoji_database','r')
     emo_db = json.load(emo_json)
-    conn = sqlite3.connect('tweets_zatmenie2.db')
+    conn = sqlite3.connect('tweets_nemtsov2.db')
     alchemyapi = AlchemyAPI()
     main()

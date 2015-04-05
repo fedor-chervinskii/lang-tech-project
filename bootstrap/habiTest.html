@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Habidatum Test Visualization</title>
+  </head>
+
+  <style>
+    path {
+      fill: none;
+      stroke: #000;
+      fill:#f7f7f7;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      stroke-width: .5px;
+    }
+  </style>
+
+  <body>
+
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="point-in-polygon.js"></script>
+
+    <script>
+    mapToBarRatio = 1.0;
+    width = window.innerWidth
+                    || document.documentElement.clientWidth
+                    || document.body.clientWidth;
+
+    height = window.innerHeight
+                    || document.documentElement.clientHeight
+                    || document.body.clientHeight;
+    tweetBubbleRaius = 3;
+
+    mapWidth = Math.floor(width*mapToBarRatio);
+    mapHeigth = height;
+
+      projection = d3.geo.mercator()
+      .rotate([-10.7,4.2,-6.3])
+      .center([38.4, 55.8])
+      .scale(20000)
+      .translate([mapWidth / 2, mapHeigth / 2]);
+
+      var path = d3.geo.path()
+      .projection(projection);
+
+      svg = d3.select("body").append("svg")
+      .attr("width", mapWidth)
+      .attr("height", mapHeigth);
+
+      d3.json("mo.geojson", function(error, moscow) {
+              if (error) return console.error(error);
+
+              regionsGroup = svg.append("g");
+
+              regionsGroup
+              .selectAll("path")
+              .data(moscow.features)
+              .enter().append("path")
+              .attr("class", "region")
+              .attr("d", path);
+
+              addLines();
+              addZoom();
+
+              });
+
+addLines = function () {
+d3.csv("segments_1000.csv", function(error, linesData) {
+
+  linesGroup = svg.append("g");
+  linesGroup.selectAll("pathLine").data(linesData)
+    .enter()
+    .append("line")
+    .style("stroke", "blue")
+    .style("opacity", 0.0)
+    .style("vector-effect","non-scaling-stroke")
+    .attr("stroke-width", 2.0)
+    .attr("x1", function(d) {return projection([d.start_lon,d.start_lat])[0]})
+    .attr("y1", function(d) {return projection([d.start_lon,d.start_lat])[1]})
+    .attr("x2", function(d) {return projection([d.end_lon,d.end_lat])[0]})
+    .attr("y2", function(d) {return projection([d.end_lon,d.end_lat])[1]})
+    .transition()
+    .duration(400)
+    .style("opacity", 0.2);
+})
+}
+
+addZoom = function() {
+
+  zoom = d3.behavior.zoom()
+      .on("zoom",function() {
+        regionsGroup.attr("transform","translate("+
+              d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+
+          linesGroup.attr("transform","translate("+
+              d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+
+        regionsGroup.selectAll("path")
+            .attr("d", path.projection(projection));
+
+          });
+
+  svg.call(zoom)
+}
+
+</script>
+
+</body>

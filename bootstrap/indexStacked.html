@@ -43,10 +43,10 @@
     <script src="point-in-polygon.js"></script>
     <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
-    <div style="padding-left: 20px; padding-top: 20px;">
+    <div>
       <input type="text" placeholder="Search for a tweet" id="SearchForm">
       <button type="submit" onclick="showTweets(SearchForm.value)">Search </button>
-      <p style="padding-top: 10px;" id="CurrentTweet"> Current Tweet</p>
+      <p id="CurrentTweet"> Current Tweet</p>
     </div>
 
     <div class="tweetsPosition">
@@ -138,12 +138,7 @@ addTweetBubbles = function (tweets) {
 
       console.log("Added Locations:");
       console.log(tweet);
-      d3.select("#CurrentTweet")
-      .text("@" + tweet["username"] + ": " + tweet["content"])
-      .style("color", function(d) {
-        if (tweet.score)
-          return color(tweet.score)
-        return "#000000" });
+      d3.select("#CurrentTweet").text(tweet["content"]);
 
       updateRegionsWithTweet(tweet);
 
@@ -178,14 +173,13 @@ updateRegionsWithTweet = function (tweet) {
   .transition()
   .duration(500)
   .style("fill", function(d) {
-    // console.log("Our object");
-    // console.log(tweet);
-    // var score = Math.random();
-    //
-    // if (score < 0.5)
-    //   score = - score - 0.5;
 
-    return color(tweet.score);
+    var score = Math.random();
+
+    if (score < 0.5)
+      score = - score - 0.5;
+
+    return color(score);
   });
 }
 
@@ -293,6 +287,8 @@ function addBarChartFor(keyword) {
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
+      console.log("Tip data:");
+
       var positive = d["tweets"].filter(function (el) {
         return el.score != null && el.score > 0.0;
       });
@@ -315,8 +311,10 @@ function addBarChartFor(keyword) {
 //http://128.199.62.25/gettweets?hours=10&keyword=.concat(keyword)
   d3.json("http://128.199.62.25/gettweets?month=3&keyword=".concat(keyword.toLowerCase()), function(error, data) {
    // console.log("http://128.199.62.25/gettweets?hours=10&keyword=".concat(keyword));
+
+
     x.domain(data.map(function(d) { return d.date; }));
-    y.domain([0, d3.max(data, function(d) { return d.tweets.length; })]);
+    y.domain([0, d3.max(data, function(d) { return d.tweets.length; }) + 10]);
 
     barGroup.append("g")
         .attr("class", "x axis")

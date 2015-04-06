@@ -17,7 +17,10 @@ def getAllVersionOfKeywords(keywords, morph):
 
 def getTweetRelevance(task, tweet):
 
-    return 0
+    tokenizedTask = frozenset(task['taskInfo']['searchKeywords'])
+    tokenizedTweet = frozenset(tweet.text.split(' '))
+    print tokenizedTask.intersection(tokenizedTweet)
+    return len(tokenizedTask.intersection(tokenizedTweet))
 
 def parseTask(task):
     #Reading a list of stop words
@@ -37,10 +40,8 @@ def parseTask(task):
     taskInfo['keywords'] = keywords
 
     taskInfo['searchKeywords'] = getAllVersionOfKeywords(keywords, morph)
-
+    task["taskInfo"] = taskInfo
     #Print it out
     print '%i keywords' % len(taskInfo['searchKeywords'])
-#    for keyword in taskInfo['searchKeywords']:
-#        print keyword
 
     return taskInfo

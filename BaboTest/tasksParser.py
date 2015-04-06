@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import pymorphy2
 from collections import OrderedDict
+import requests
+import json
 
 def getAllVersionOfKeywords(keywords, morph):
     searchKeywords = []
@@ -19,7 +21,7 @@ def getTweetRelevance(task, tweet):
 
     tokenizedTask = frozenset(task['taskInfo']['searchKeywords'])
     tokenizedTweet = frozenset(tweet.text.split(' '))
-    print tokenizedTask.intersection(tokenizedTweet)
+    #print tokenizedTask.intersection(tokenizedTweet)
     return len(tokenizedTask.intersection(tokenizedTweet))
 
 def parseTask(task):
@@ -45,3 +47,17 @@ def parseTask(task):
     print '%i keywords' % len(taskInfo['searchKeywords'])
 
     return taskInfo
+
+def getLocationCoordinates(location):
+    response = requests.get('https://maps.googleapis.com/maps/api/geocode/json',
+                        params={'address' : location,
+                                'key' : 'AIzaSyCtaVbVYJrHPdbkj_gpxQWktZ-_5sJRyVk'})
+    resonseJSON = response.json()
+
+    if resonseJSON['status'] == 'OK':
+        someResult = resonseJSON['results'][0]
+        return {'lat':someResult['geometry']['location']['lat'],
+                'lng':someResult['geometry']['location']['lng'],
+                'formatted_address':firstResult['formatted_address']}
+    else:
+        return None

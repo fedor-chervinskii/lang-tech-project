@@ -30,7 +30,7 @@ def parseTask(task):
 
     tokenizedTask = task['text'].split(' ')
     #All the keywords are after some common text that ends with 'за'
-    keywords = tokenizedTask[tokenizedTask.index(u'за') + 2:]
+    keywords = tokenizedTask[tokenizedTask.index(u'за') + 1:]
 
     keywords = [k for k in keywords if not k in preps]
     taskInfo['keywords'] = keywords

@@ -2,6 +2,11 @@ from getTasks import getTasks
 from tasksParser import *
 import tweepy
 import time
+from multiprocessing import Process
+
+def tracking(track):
+    sapi = tweepy.streaming.Stream(auths[4], CustomStreamListener())
+    sapi.filter(track = track)
 
 class CustomStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -33,15 +38,21 @@ class CustomStreamListener(tweepy.StreamListener):
         print notice
         return True # Don't kill the stream
 
-#def main():
+def main(p):
 
-#    for i,task in enumerate(tasks):
-#        taskInfo = parseTask(task)
-#        print taskInfo['searchKeywords']
-    #geoTwitter(taskInfo["searchKeywords"])
-
-#    sapi = streaming.Stream(auths[4], CustomStreamListener()))
-#    sapi.filter(track = taskInfo['searchKeywords'])
+    while True:
+        time.sleep(50)
+        tasks = getTasks()
+        for i in range(len(tasks)):
+            print tasks[i]['text']
+        track = []
+        for i,task in enumerate(tasks):
+            taskInfo = parseTask(task)
+            track += taskInfo['searchKeywords']
+        p.terminate()
+        p.join()
+        p = Process(target=tracking, args=(track,))
+        p.start()
 
 
 if __name__ == "__main__":
@@ -78,6 +89,8 @@ if __name__ == "__main__":
         auths.append(auth)
 
     tasks = getTasks()
+    for i in range(len(tasks)):
+        print tasks[i]['text']
     task_ids = [task["ID"] for task in tasks]
     track = []
 
@@ -85,7 +98,7 @@ if __name__ == "__main__":
         taskInfo = parseTask(task)
         track += taskInfo['searchKeywords']
 
-    sapi = tweepy.streaming.Stream(auths[4], CustomStreamListener())
-    sapi.filter(track = track)
+    p = Process(target=tracking, args=(track,))
+    p.start()
 
-#    main()
+    main(p)

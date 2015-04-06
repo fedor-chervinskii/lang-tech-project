@@ -48,6 +48,7 @@ def parseTask(task):
 
     taskInfo['searchKeywords'] = getAllVersionOfKeywords(keywords, morph)
     task["taskInfo"] = taskInfo
+    task["topTweets"] = []
     #Print it out
     print '%i keywords' % len(taskInfo['searchKeywords'])
 

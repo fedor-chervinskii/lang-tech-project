@@ -3,6 +3,7 @@ from tasksParser import *
 import time
 from multiprocessing import Process
 from CustomStreamListener import *
+from operator import itemgetter
 
 class NewsSolver():
 
@@ -40,6 +41,22 @@ class NewsSolver():
             keyWords += taskInfo['searchKeywords']
         return keyWords
 
+    def updateTopTweetsWithTweet(self, tweet, tweetRank, task):
+        if len(task["topTweets"]) > 0:
+            curretRankLowerBound = task["topTweets"][-1]["rank"]
+
+            if tweetRank >=curretRankLowerBound:
+                task["topTweets"][-1] = {"tweet":tweet,
+                                         "rank":tweetRank}
+                task["topTweets"] = sorted(task["topTweets"], key=itemgetter('rank'))
+                print ''
+                print 'Task: ' + task['text']
+                print 'Top Tweet: ' + task["topTweets"][0]["tweet"].text
+                print ''
+
+        else:
+            task["topTweets"] = [{"tweet":tweet,
+                                  "rank":tweetRank}]
 
     def handleNewTweet(self, tweet):
 
@@ -55,7 +72,8 @@ class NewsSolver():
         print ''
 
         for task in self.tasks:
-            getTweetRelevance(task, tweet)
+            tweetRank = getTweetRelevance(task, tweet)
+            self.updateTopTweetsWithTweet(tweet, tweetRank, task)
             #print 'RELEVANCE to the task %i: %i' % (task['ID'], getTweetRelevance(task, tweet))
 
 solver = NewsSolver()

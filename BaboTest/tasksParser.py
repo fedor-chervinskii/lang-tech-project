@@ -15,6 +15,9 @@ def getAllVersionOfKeywords(keywords, morph):
     #Leave only unique words
     return list(OrderedDict.fromkeys(searchKeywords))
 
+def getTweetRelevance(task, txt):
+    return 0
+
 def parseTask(task):
     #Reading a list of stop words
     f = open('prepositions.csv')
@@ -35,8 +38,8 @@ def parseTask(task):
     taskInfo['searchKeywords'] = getAllVersionOfKeywords(keywords, morph)
 
     #Print it out
-    print len(taskInfo['searchKeywords'])
-    for keyword in taskInfo['searchKeywords']:
-        print keyword
+    print '%i keywords' % len(taskInfo['searchKeywords'])
+#    for keyword in taskInfo['searchKeywords']:
+#        print keyword
 
     return taskInfo

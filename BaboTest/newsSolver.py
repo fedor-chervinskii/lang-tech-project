@@ -63,13 +63,7 @@ class NewsSolver():
         print tweet.userID
         print tweet.text
         if len(tweet.location) != 0:
-            print 'location: ' + tweet.location
             tweet.apilocation = getLocationCoordinates(tweet.location)
-        if tweet.geodata is not None:
-            print 'geodata: ' + tweet.geodata
-
-
-        print ''
 
         for task in self.tasks:
             tweetRank = getTweetRelevance(task, tweet)

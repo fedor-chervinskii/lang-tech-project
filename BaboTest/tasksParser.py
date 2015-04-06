@@ -21,7 +21,8 @@ def getAllVersionOfKeywords(keywords, morph):
 def getTweetRelevance(task, tweet):
 
     if len(tweet.apilocation) > 0:
-        print sqrt((tweet.apilocation['lat']-task['location']['lat'])**2 + (tweet.apilocation['lng']-task['location']['lon'])**2)
+        if sqrt((tweet.apilocation['lat']-task['location']['lat'])**2 + (tweet.apilocation['lng']-task['location']['lon'])**2) < 1:
+            print 'increase tweet this rating'
 
     tokenizedTask = frozenset(task['taskInfo']['searchKeywords'])
     tokenizedTweet = frozenset(tweet.text.split(' '))

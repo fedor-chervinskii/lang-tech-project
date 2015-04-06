@@ -4,6 +4,14 @@ def tracking(track, auths,newTweetsHandler):
     sapi = tweepy.streaming.Stream(auths[4], CustomStreamListener(newTweetsHandler))
     sapi.filter(track = track)
 
+class Tweet():
+    def __init__(self,tID,uID,txt,src,cat):
+        self.tweetID = tID
+        self.userID = uID
+        self.text = txt
+        self.device = src
+        self.createdAt = cat
+
 class CustomStreamListener(tweepy.StreamListener):
     def __init__(self, newTweetsHandler=None):
         super(CustomStreamListener, self ).__init__()
@@ -11,19 +19,19 @@ class CustomStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         try:
+
             tid = status.id_str
             usr = status.author.screen_name.strip()
             txt = status.text.strip()
-            txt_lower = txt
             src = status.source.strip()
             cat = status.created_at
+            tweet = Tweet(tid,usr,txt,src,cat)
+            self.newTweetsHandler.handleNewTweet(tweet)
+            print usr + " : "
+            print txt.encode('utf-8')
         except Exception as e:
             # Most errors we're going to see relate to the handling of UTF-8 messages (sorry)
             print(e)
-
-        print usr + " : "
-        print txt.encode('utf-8')
-        self.newTweetsHandler.handleNewTweet(txt)
 
     def on_error(self, status_code):
         print >> sys.stderr, 'Encountered error with status code:', status_code

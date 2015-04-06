@@ -8,6 +8,7 @@ import sys
 import re
 #import matplotlib.pyplot as plt
 #from drawnow import drawnow
+import multiprocessing
 from alchemyapi import AlchemyAPI
 
 alchemyapi = AlchemyAPI()
@@ -86,11 +87,10 @@ class CustomStreamListener(tweepy.StreamListener):
         with open('count.txt','w') as count_file:
             count_file.write(str(cnt+1))
             count_file.close()
+
         print usr + ":"
         print txt
         response = getSentiment(txt + ' '.join(smile_check(txt)),alchemyapi)
-
-
 
         print response
         try:
@@ -108,6 +108,14 @@ class CustomStreamListener(tweepy.StreamListener):
         return True # Don't kill the stream
 
 
+def startStreaming():
+    up = 55.96
+    down = 55.49
+    right = 37.97
+    left = 37.32
+    print 'Initiating stream'
+    sapi = tweepy.streaming.Stream(auths[4], CustomStreamListener())
+    sapi.filter(locations=[left, down, right, up])
 
 
 def main():
@@ -122,14 +130,11 @@ def main():
 
     #curs.execute("CREATE TABLE tweets (tid integer, username text, created_at text, content text, coordinates text, source text)")
 
-    up = 55.96
-    down = 55.49
-    right = 37.97
-    left = 37.32
-
-    sapi = tweepy.streaming.Stream(auths[4], CustomStreamListener())
-    sapi.filter(locations=[left, down, right, up])
-
+    p = multiprocessing.Process(target=startStreaming())
+    p.start()
+    time.sleep(30)
+    print 'Out of time!'
+    p.terminate()
 
 if __name__ == "__main__":
     

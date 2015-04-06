@@ -16,6 +16,7 @@ def getAllVersionOfKeywords(keywords, morph):
     return list(OrderedDict.fromkeys(searchKeywords))
 
 def getTweetRelevance(task, txt):
+    print task
     return 0
 
 def parseTask(task):

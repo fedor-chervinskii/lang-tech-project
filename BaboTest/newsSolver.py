@@ -33,6 +33,13 @@ class NewsSolver():
         for i in range(len(self.tasks)):
             print self.tasks[i]['text']
 
+    def printTaskTopTweet(self, task):
+        print ''
+        print 'Task: ' + task['text']
+        print 'Top Tweet: ' + task["topTweets"][0]["tweet"].text
+        print ''
+
+
     def getKeywordsForStreaming(self):
         keyWords = []
 
@@ -42,21 +49,21 @@ class NewsSolver():
         return keyWords
 
     def updateTopTweetsWithTweet(self, tweet, tweetRank, task):
-        if len(task["topTweets"]) > 0:
+        #Update twitter list if it's full
+        if len(task["topTweets"]) == 5:
             curretRankLowerBound = task["topTweets"][-1]["rank"]
 
             if tweetRank >=curretRankLowerBound:
                 task["topTweets"][-1] = {"tweet":tweet,
-                                         "rank":tweetRank}
-                task["topTweets"] = sorted(task["topTweets"], key=itemgetter('rank'))
-                print ''
-                print 'Task: ' + task['text']
-                print 'Top Tweet: ' + task["topTweets"][0]["tweet"].text
-                print ''
-
+                                             "rank":tweetRank}
+        #Or just add it to the end of the list
         else:
-            task["topTweets"] = [{"tweet":tweet,
-                                  "rank":tweetRank}]
+            task["topTweets"].append({"tweet":tweet,
+                                      "rank":tweetRank})
+
+        #Sort the list by rank
+        task["topTweets"] = sorted(task["topTweets"], key=itemgetter('rank'))
+        self.printTaskTopTweet(task)
 
     def handleNewTweet(self, tweet):
 

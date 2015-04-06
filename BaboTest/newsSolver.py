@@ -42,8 +42,19 @@ class NewsSolver():
 
 
     def handleNewTweet(self, tweet):
+
+        print tweet.userID + ': ' + tweet.text
+        if len(tweet.location) != 0:
+            print 'location: ' + tweet.location
+        if tweet.geodata is not None:
+            print 'geodata: ' + tweet.geodata
+        if tweet.timezone is not None:
+            print 'timezone: ' + tweet.timezone
+        print ''
+
         for task in self.tasks:
-            print 'RELEVANCE to the task %i: %i' % (task['ID'], getTweetRelevance(task, tweet))
+            getTweetRelevance(task, tweet)
+            #print 'RELEVANCE to the task %i: %i' % (task['ID'], getTweetRelevance(task, tweet))
 
 solver = NewsSolver()
 solver.run()

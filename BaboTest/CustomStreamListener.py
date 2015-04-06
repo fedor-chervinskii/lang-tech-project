@@ -5,12 +5,15 @@ def tracking(track, auths,newTweetsHandler):
     sapi.filter(track = track)
 
 class Tweet():
-    def __init__(self,tID,uID,txt,src,cat):
+    def __init__(self,tID,uID,txt,src,cat,timezone,location,geodata):
         self.tweetID = tID
         self.userID = uID
         self.text = txt
         self.device = src
         self.createdAt = cat
+        self.timezone = timezone
+        self.location = location
+        self.geodata = geodata
 
 class CustomStreamListener(tweepy.StreamListener):
     def __init__(self, newTweetsHandler=None):
@@ -25,10 +28,12 @@ class CustomStreamListener(tweepy.StreamListener):
             txt = status.text.strip()
             src = status.source.strip()
             cat = status.created_at
-            tweet = Tweet(tid,usr,txt,src,cat)
+            timezone = status.author.time_zone
+            location = status.author.location.strip()
+            geodata = status.coordinates
+            tweet = Tweet(tid,usr,txt,src,cat,timezone,location,geodata)
             self.newTweetsHandler.handleNewTweet(tweet)
-            print usr + " : "
-            print txt.encode('utf-8')
+
         except Exception as e:
             # Most errors we're going to see relate to the handling of UTF-8 messages (sorry)
             print(e)

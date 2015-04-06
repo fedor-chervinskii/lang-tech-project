@@ -15,8 +15,8 @@ def getAllVersionOfKeywords(keywords, morph):
     #Leave only unique words
     return list(OrderedDict.fromkeys(searchKeywords))
 
-def getTweetRelevance(task, txt):
-    print task
+def getTweetRelevance(task, tweet):
+
     return 0
 
 def parseTask(task):

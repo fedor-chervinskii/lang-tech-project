@@ -4,6 +4,7 @@ import pymorphy2
 from collections import OrderedDict
 import requests
 import json
+from math import sqrt
 
 def getAllVersionOfKeywords(keywords, morph):
     searchKeywords = []
@@ -19,9 +20,13 @@ def getAllVersionOfKeywords(keywords, morph):
 
 def getTweetRelevance(task, tweet):
 
+    if len(tweet.apilocation) > 0:
+        print sqrt((tweet.apilocation['lat']-task['location']['lat'])**2 + (tweet.apilocation['lng']-task['location']['lon'])**2)
+
     tokenizedTask = frozenset(task['taskInfo']['searchKeywords'])
     tokenizedTweet = frozenset(tweet.text.split(' '))
     #print tokenizedTask.intersection(tokenizedTweet)
+
     return len(tokenizedTask.intersection(tokenizedTweet))
 
 def parseTask(task):
@@ -58,6 +63,6 @@ def getLocationCoordinates(location):
         someResult = resonseJSON['results'][0]
         return {'lat':someResult['geometry']['location']['lat'],
                 'lng':someResult['geometry']['location']['lng'],
-                'formatted_address':firstResult['formatted_address']}
+                'formatted_address':someResult['formatted_address']}
     else:
         return None

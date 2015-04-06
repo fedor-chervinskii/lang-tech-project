@@ -5,7 +5,7 @@ def tracking(track, auths,newTweetsHandler):
     sapi.filter(track = track)
 
 class Tweet():
-    def __init__(self,tID,uID,txt,src,cat,timezone,location,geodata):
+    def __init__(self, tID, uID, txt, src, cat, timezone, location, geodatum):
         self.tweetID = tID
         self.userID = uID
         self.text = txt
@@ -13,7 +13,8 @@ class Tweet():
         self.createdAt = cat
         self.timezone = timezone
         self.location = location
-        self.geodata = geodata
+        self.geodata = geodatum
+        self.apilocation = ''
 
 class CustomStreamListener(tweepy.StreamListener):
     def __init__(self, newTweetsHandler=None):
@@ -30,8 +31,8 @@ class CustomStreamListener(tweepy.StreamListener):
             cat = status.created_at
             timezone = status.author.time_zone
             location = status.author.location.strip()
-            geodata = status.coordinates
-            tweet = Tweet(tid,usr,txt,src,cat,timezone,location,geodata)
+            geodatum = status.coordinates
+            tweet = Tweet(tid,usr,txt,src,cat,timezone,location,geodatum)
             self.newTweetsHandler.handleNewTweet(tweet)
 
         except Exception as e:

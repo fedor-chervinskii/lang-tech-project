@@ -1,38 +1,5 @@
 import tweepy
 
-def initAPIKeys():
-    CONSUMER_KEY = ['KpfGPpsl5Dn03Lb5wzvQfEaMc',
-                '13AqFSrFdFv7rdLVOGvzJCkmp',
-                '45RuEYLg5eVTYyEGuyEerplyY',
-                '3qTMdAYKxctRe69HMDqyeNST2',
-                'JJkrFkKGlhDIEgj2eTrQ']
-
-    CONSUMER_SECRET = ['UWRvjR3CHsducO1i7268F24C3M9UJu5U7p2u4kh6Ds6QMDdKCg',
-                       'LVaOSMsMBWl4FmgthjNPWMnkKe7MXKXrmu5uL6JnJWIhHieDxR',
-                       'LBnbBTIAhtYYBU6RWeyCzgIcJannob7bPrzg3dMqFuRDLJnbHp',
-                       'Jwwv3wHzL2jtYMHylakpjmDxf5SgvAwexFGfEoCFHw92f65lnK',
-                       'H7hmUQXqXseKbj1WnKFMnaURyQbBaDeyK3DAAwLI']
-
-    OAUTH_TOKEN = ['2181757628-o8IOmHBelyhVM6KEkkT50ZLIbv4fj6llW6KSjpd',
-                   '175663996-ZNL1MivJASYSxWsNXlxNHnQhmLHDegH9VdVfATsL',
-                   '175663996-lQRf1JNjvR1fVILTtoEH4FHVQ1sLtPa0IIa8lMog',
-                   '2841198550-rlPUcMyCj8rk3Yv6XxGJWk0ELCCUGUrxhvYyAa6',
-                   '2181757628-0n3FpGEtoob0qum7IMeN3R0oV1kg5STZwmXNa9Q']
-
-    OAUTH_TOKEN_SECRET = ['cyLlZtQyv4rgcWA5pGaXLtGJaFqD4PGOlxSdb4ECVzoSP',
-                          'gJOHvvlcObkiu7Qd91WapTFwnOVsisdoeMBUHxcFfzBac',
-                          'eQ0SUwziSUgRs72HJzWpU9IAlVP92X9YJsGHOPrWUctw3',
-                          '9b36g1wXLzn1yB0FGIoT9eACxPPpaZVfESnmRYcDYk3wv',
-                          'MqgrZHb8CMyNqFJn36YmCtLUQ5rqNUzX2IxWNfQdHQ6t7']
-
-    auths = []
-
-    for i in range(5):
-        auth = tweepy.OAuthHandler(CONSUMER_KEY[i], CONSUMER_SECRET[i])
-        auth.set_access_token(OAUTH_TOKEN[i], OAUTH_TOKEN_SECRET[i])
-        auths.append(auth)
-    return auths
-
 def tracking(track, auths,newTweetsHandler):
     sapi = tweepy.streaming.Stream(auths[4], CustomStreamListener(newTweetsHandler))
     sapi.filter(track = track)
@@ -69,3 +36,36 @@ class CustomStreamListener(tweepy.StreamListener):
     def on_disconnect(self, notice):
         print notice
         return True # Don't kill the stream
+
+def initAPIKeys():
+    CONSUMER_KEY = ['KpfGPpsl5Dn03Lb5wzvQfEaMc',
+                '13AqFSrFdFv7rdLVOGvzJCkmp',
+                '45RuEYLg5eVTYyEGuyEerplyY',
+                '3qTMdAYKxctRe69HMDqyeNST2',
+                'JJkrFkKGlhDIEgj2eTrQ']
+
+    CONSUMER_SECRET = ['UWRvjR3CHsducO1i7268F24C3M9UJu5U7p2u4kh6Ds6QMDdKCg',
+                       'LVaOSMsMBWl4FmgthjNPWMnkKe7MXKXrmu5uL6JnJWIhHieDxR',
+                       'LBnbBTIAhtYYBU6RWeyCzgIcJannob7bPrzg3dMqFuRDLJnbHp',
+                       'Jwwv3wHzL2jtYMHylakpjmDxf5SgvAwexFGfEoCFHw92f65lnK',
+                       'H7hmUQXqXseKbj1WnKFMnaURyQbBaDeyK3DAAwLI']
+
+    OAUTH_TOKEN = ['2181757628-o8IOmHBelyhVM6KEkkT50ZLIbv4fj6llW6KSjpd',
+                   '175663996-ZNL1MivJASYSxWsNXlxNHnQhmLHDegH9VdVfATsL',
+                   '175663996-lQRf1JNjvR1fVILTtoEH4FHVQ1sLtPa0IIa8lMog',
+                   '2841198550-rlPUcMyCj8rk3Yv6XxGJWk0ELCCUGUrxhvYyAa6',
+                   '2181757628-0n3FpGEtoob0qum7IMeN3R0oV1kg5STZwmXNa9Q']
+
+    OAUTH_TOKEN_SECRET = ['cyLlZtQyv4rgcWA5pGaXLtGJaFqD4PGOlxSdb4ECVzoSP',
+                          'gJOHvvlcObkiu7Qd91WapTFwnOVsisdoeMBUHxcFfzBac',
+                          'eQ0SUwziSUgRs72HJzWpU9IAlVP92X9YJsGHOPrWUctw3',
+                          '9b36g1wXLzn1yB0FGIoT9eACxPPpaZVfESnmRYcDYk3wv',
+                          'MqgrZHb8CMyNqFJn36YmCtLUQ5rqNUzX2IxWNfQdHQ6t7']
+
+    auths = []
+
+    for i in range(5):
+        auth = tweepy.OAuthHandler(CONSUMER_KEY[i], CONSUMER_SECRET[i])
+        auth.set_access_token(OAUTH_TOKEN[i], OAUTH_TOKEN_SECRET[i])
+        auths.append(auth)
+    return auths

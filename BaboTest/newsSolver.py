@@ -20,7 +20,6 @@ class NewsSolver():
             task_ids = [task["ID"] for task in self.tasks]
             streamingKeywords = self.getKeywordsForStreaming()
 
-
             process = Process(target=tracking, args=(streamingKeywords, self.auths, self))
             process.start()
 

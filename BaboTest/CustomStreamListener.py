@@ -14,7 +14,7 @@ class Tweet():
         self.timezone = timezone
         self.location = location
         self.geodata = geodatum
-        self.apilocation = ''
+        self.trueLocation = {}
 
 class CustomStreamListener(tweepy.StreamListener):
     def __init__(self, newTweetsHandler=None):

@@ -65,12 +65,23 @@ class NewsSolver():
         task["topTweets"] = sorted(task["topTweets"], key=itemgetter('rank'))
         self.printTaskTopTweet(task)
 
+    def processGeodata(self, tweet):
+        if tweet.geodata is not None:
+            geodata = tweet.geodata['coordinates']
+            tweet.trueLocation = {'lat':geodata[0], 'lon':geodata[1]}
+        elif len(tweet.location):
+            apiResponse = getLocationCoordinates(tweet.location)
+            tweet.trueLocation['lat'] = apiResponse['lat']
+            tweet.trueLocation['lon'] = apiResponse['lng']
+            tweet.trueLocation['text'] = apiResponse['formatted_address']
+        else:
+            tweet.trueLocation = None
+
     def handleNewTweet(self, tweet):
 
         print tweet.userID
         print tweet.text
-        if len(tweet.location) != 0:
-            tweet.apilocation = getLocationCoordinates(tweet.location)
+        self.processGeodata(tweet)
 
         for task in self.tasks:
             tweetRank = getTweetRelevance(task, tweet)

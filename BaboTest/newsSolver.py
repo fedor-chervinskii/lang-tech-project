@@ -4,20 +4,21 @@ import time
 from multiprocessing import Process
 from CustomStreamListener import *
 from operator import itemgetter
+import csv
 
 class NewsSolver():
 
     def run(self):
+        self.tasks = []
         self.auths = initAPIKeys()
         self.main()
 
     def main(self):
 
         while True:
-            self.tasks = getTasks()
+            self.updateTasks()
             self.printTasks()
 
-            task_ids = [task["ID"] for task in self.tasks]
             streamingKeywords = self.getKeywordsForStreaming()
 
             process = Process(target=tracking, args=(streamingKeywords, self.auths, self))
@@ -37,7 +38,16 @@ class NewsSolver():
         print 'Task: ' + task['text']
         print 'Top Tweet: ' + task["topTweets"][0]["tweet"].text
         print ''
+    def saveTopTweetsOfTask(self, task):
+        #writer = csv.writer(open(filepath,'wb'))
+        with open("task{}.tsv".format(task["ID"]), 'wb') as f:
+            for tweet in task["topTweets"]:
+                f.write("{0}\t{1}\n".format(tweet["tweet"].text.encode("utf-8"), tweet["rank"]))
 
+    def updateTasks(self):
+        currentTaks = getTasks()
+        tasksIds = [task["ID"] for task in self.tasks]
+        [self.tasks.append(task) for task in currentTaks if task["ID"] not in tasksIds]
 
     def getKeywordsForStreaming(self):
         keyWords = []
@@ -48,6 +58,7 @@ class NewsSolver():
         return keyWords
 
     def updateTopTweetsWithTweet(self, tweet, tweetRank, task):
+        updatedRating = False
         #Update twitter list if it's full
         if len(task["topTweets"]) == 5:
             curretRankLowerBound = task["topTweets"][-1]["rank"]
@@ -55,14 +66,18 @@ class NewsSolver():
             if tweetRank >=curretRankLowerBound:
                 task["topTweets"][-1] = {"tweet":tweet,
                                              "rank":tweetRank}
+                updatedRating = True
         #Or just add it to the end of the list
         else:
             task["topTweets"].append({"tweet":tweet,
                                       "rank":tweetRank})
+            updatedRating = True
 
         #Sort the list by rank
-        task["topTweets"] = sorted(task["topTweets"], key=itemgetter('rank'))
-        self.printTaskTopTweet(task)
+        if updatedRating == True:
+            task["topTweets"] = sorted(task["topTweets"], key=itemgetter('rank'))
+            self.printTaskTopTweet(task)
+            self.saveTopTweetsOfTask(task)
 
     def processGeodata(self, tweet):
         if tweet.geodata is not None:

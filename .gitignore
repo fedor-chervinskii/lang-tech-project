@@ -18,3 +18,5 @@ tweets.json
 *.xml
 
 *.pyc
+
+*.tsv

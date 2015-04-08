@@ -19,23 +19,25 @@ def getAllVersionOfKeywords(keywords, morph):
     return list(OrderedDict.fromkeys(searchKeywords))
 
 def getTweetRelevance(task, tweet):
+    k = 1
     tlcn = tweet.trueLocation
     if tlcn:
         if sqrt((tlcn['lat']-task['location']['lat'])**2 + (tlcn['lon']-task['location']['lon'])**2) < 1:
             print('Found Match')
+            k = 2
 
     tokenizedTask = frozenset(task['taskInfo']['searchKeywords'])
     tokenizedTweet = frozenset(tweet.text.split(' '))
     #print tokenizedTask.intersection(tokenizedTweet)
 
-    return len(tokenizedTask.intersection(tokenizedTweet))
+    return len(tokenizedTask.intersection(tokenizedTweet))*k
 
 def parseTask(task):
     #Reading a list of stop words
     f = open('prepositions.csv')
     preps = [unicode(line[:-1].decode('utf-8')) for line in f.readlines()]
 
-    #Initializing morph amalyzer to get all the forms of a word
+    #Initializing morph analyzer to get all the forms of a word
     morph = pymorphy2.MorphAnalyzer()
 
     taskInfo = {}

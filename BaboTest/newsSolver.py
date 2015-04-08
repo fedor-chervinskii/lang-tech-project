@@ -80,7 +80,7 @@ class NewsSolver():
             self.saveTopTweetsOfTask(task)
 
     def processGeodata(self, tweet):
-        if tweet.geodata is not None:
+        if tweet.geodata:
             geodata = tweet.geodata['coordinates']
             tweet.trueLocation = {'lat':geodata[0], 'lon':geodata[1]}
         elif len(tweet.location):
